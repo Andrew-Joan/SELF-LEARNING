@@ -1,0 +1,647 @@
+*{
+    margin: 0;
+    padding: 0;
+  }
+  
+  body{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: white;
+    background-color: rgb(52, 36, 59);
+  }
+  
+  .background{
+    background-color:rgb(82, 58, 98);
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .single-comic-name{
+    font-size: 36px;
+    padding-top: 15px;
+    text-align: center;
+    padding-bottom: 30px;
+  }
+  
+  .single-comic-container{
+    display: flex;
+    column-gap: 20px;
+  }
+  
+  .single-comic-img-container{
+    width: 200px;
+    height: 280px;
+  }
+  
+  .single-comic-img-container img{
+    width: 100%;
+    height : 100%;
+    border-radius: 10px;
+  }
+  
+  .single-comic-stat{
+    background-color:rgb(52, 36, 59);
+    padding-left: 30px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    padding-right: 30px;
+    border-radius: 10px;
+  }
+  
+  .star-related{
+    display: flex;
+    column-gap: 8px;
+  }
+  
+  .stars{
+    width: 25px;
+    height: 25px;
+    transition: transform 0.5s;
+  }
+  
+  .stars:hover{
+    transform: rotate(360deg);
+  }
+  
+  .star-value{
+    font-size: 18px;
+    margin-top: 3px;
+    margin-bottom: 10px;
+  }
+  
+  .indicator-background-container{
+    display: flex;
+    column-gap: 30px;
+  }
+  .indicator-background-1{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    width: 60px;
+  }
+  .indicator-background-2{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    width: 330px;
+  }
+  
+  .indicator-34{
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+  }
+  .indicator-34-flex-1{
+    display: flex;
+    column-gap: 20px;
+  }
+  .indicator-3{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+  }
+  .indicator-4{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+  }
+  
+  .bookmark-symbol{
+    border-left-style: solid;
+    padding-left: 38px;
+    margin-left: -26px;
+  }
+  .comment-bookmark-count{
+    display: flex;
+    margin-left: -11px;
+    margin-top: -30px;
+  }
+  
+  .count-s1{
+    width: 70px;
+    display: flex;
+    font-size: 13px;
+    text-align: center;
+  }
+  
+  .count-s2{
+    width: 80px;
+    display: flex;
+    font-size: 13px;
+    border-left-style: solid;
+    padding-left: 0px;
+    text-align: center;
+  }
+  .socials-comic{
+    display: flex;
+    column-gap: 50px;
+    list-style: none;
+    margin-left: 15px;
+  }
+  
+  .socials-comic a{
+    text-decoration: none;
+    width: 20px;
+    color: white;
+    transition: transform 0.2s;
+    transform: scale(1.5);
+  }
+  
+  .socials-comic a:hover{
+    color:rgb(134, 7, 96);
+    transform: scale(1.9);
+  }
+  
+  .socials-comic a:active{
+    transform: scale(1);
+  }
+  
+  .container{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .synopsis-chapter-container{
+    background-color: rgb(40, 27, 45);
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    width: 660px;
+  }
+  
+  .latest-synopsis, .latest-chapter-update, .discussion-headline{
+    border-bottom-style: solid;
+    border-width: 1px;
+    border-color: rgb(134, 7, 96);
+  }
+  
+  .latest-synopsis, .latest-chapter-update, .discussion-headline, .trending-headline{
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .synopsis-text{
+    margin-top: 10px;
+  }
+  
+  .synopsis-show-more{
+    text-align: center;
+    border-bottom-style: solid;
+    border-width: 1px;
+    margin-top: 27px;
+  }
+  
+  .synopsis-button-show-more{
+    background-color:rgb(40, 27, 45);
+    color: white;
+    border: none;
+    font-size: 17px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: color 0.05s, transform 0.25s;
+  }
+  
+  .synopsis-button-show-more:hover{
+    color: rgb(134, 7, 96);
+    transform: scale(1.07);
+  }
+  
+  .synopsis-button-show-more:active{
+    transform: scale(0.98);
+  }
+  
+  .first-last-chapter-button-container{
+    display: flex;
+    column-gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .first-last-chapter-container{
+    width: 100%;
+  }
+  
+  .first-last-button{
+    background-color:rgb(73, 5, 97);
+    width: 100%;
+    border-radius: 5px;
+    padding: 13px 0px;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s, background-color 0.5s;
+  }
+  
+  .first-last-button:hover{
+    background-color: white;
+  }
+  
+  .first-last-button:hover div{
+    color:rgb(73, 5, 97);
+  }
+  
+  .first-last-button:active{
+    transform: scale(0.97);
+  }
+  
+  .upper-text-button{
+    font-size: 14px;
+    color: white;
+  }
+  
+  .lower-text-button{
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-top: 3px;
+  }
+  
+  .chapter-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+  }
+  
+  .chapter-number-container{
+    display: flex;
+    justify-content: space-between;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(134, 7, 96);
+    border-radius: 3px;
+    padding: 6px;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.25s;
+  }
+  
+  .chapter-number-container:hover{
+    background-color:rgb(134, 7, 96);
+    transform: scale(1.01);
+  }
+  
+  .chapter-number-container:active{
+    transform: scale(0.99);
+  }
+  
+  .chap-number{
+    font-size: 14px;
+  }
+  
+  .chap-release-date{
+    font-size: 12px;
+    color: #888;
+  }
+  
+  .chapter-number-container:hover div{
+    color: white;
+  }
+  
+  .discussion-instruction, .total-comment{
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .user-log{
+    margin-top: 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .user-log-span{
+    transition: color 0.4s;
+  }
+  
+  .user-log-span:hover{
+    color: rgb(134, 7, 96);
+  }
+  
+  .user-img-text{
+    display: flex;
+    margin-top: 10px;
+    column-gap: 10px;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .user-img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    transition: transform 0.25s, opacity 0.2s;
+  }
+  
+  .user-img:hover{
+    transform: scale(1.15);
+    border-radius: 4px;
+    opacity: 0.8;
+    cursor: pointer;
+  }
+  
+  .user-img:active{
+    transform: scale(0.99);
+  }
+  
+  .user-img-text textarea{
+    outline: none;
+    padding-left: 7px;
+    padding-top: 7px;
+  }
+  
+  .post-comment-container{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  
+  .post-comment-button{
+    padding: 12px 25px;
+    background-color:rgb(73, 5, 97);
+    color: white;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.8s, transform 0.2s;
+  }
+  
+  .post-comment-button:hover{
+    background-color: white;
+    color: rgb(73, 5, 97);
+  }
+  
+  .post-comment-button:active{
+    transform: scale(0.95);
+  }
+  
+  .user-comment{
+    display: flex;
+    column-gap: 10px;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .user-comment span{
+    font-size: 13px;
+    color: #888;
+  }
+  
+  .user-name-comment{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .user-name, .user-comment-text{
+    flex: 1;
+    transition: color 0.3s;
+  }
+  
+  .user-name:hover{
+    color: rgb(134, 7, 96);
+    cursor: pointer;
+  }
+
+  .right-container{
+    display: flex;
+    flex-direction: column;
+    background-color:rgb(52, 36, 59);
+    margin-top: 20px;
+    margin-left: 20px;
+    border-radius: 8px;
+  }
+  
+  .trending-container{
+    background-color: rgb(40, 27, 45);
+    width: 300px;
+    box-sizing: border-box;
+    padding: 0px 20px 2px 20px;
+    margin: 20px 0px 0px 20px;
+    border-radius: 8px;
+  }
+
+  .trending-headline{
+    border-bottom: 1px solid rgb(134, 7, 96);
+    margin-bottom: 20px;
+  }
+  
+  .trending-duration-container{
+    margin-bottom: 13px;
+  }
+  
+  .trending-duration{
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(69, 43, 78);
+    padding: 8px 11px;
+    border-radius: 7px;
+    font-weight: bold;
+  }
+  
+  .trending-weekly{
+    background-color:rgb(134, 7, 96);
+    border-radius: 3px;
+  }
+  
+  .trending-monthly, .trending-alltime{
+    transition: transform 0.1s, background-color 0.05s;
+  }
+  
+  .trending-monthly:hover, .trending-alltime:hover{
+    background-color: rgb(134, 7, 96);
+    border-radius: 3px;
+    transform: scale(1.07);
+  }
+  
+  .trending-monthly:active, .trending-alltime:active{
+    transform: scale(0.9);
+  }
+  
+  .trending-weekly, .trending-monthly, .trending-alltime{
+    padding: 2px 4px;
+    cursor: pointer;
+  }
+  
+  .all-10-trending-comic-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    padding-bottom: 10px;
+  }
+  
+  .trending-comic-container{
+    display: flex;
+    column-gap: 8px;
+    border-bottom-style: solid;
+    border-width: 1px;
+    padding-bottom: 8px;
+  }
+  
+  .trending-comic-container-10{
+    display: flex;
+    column-gap: 8px;
+    border-bottom-style: solid;
+    border-width: 1px;
+    padding-bottom: 8px;
+    border: none;
+  }
+  
+  .trending-comic-number-cover{
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+  }
+  
+  .trending-comic-number{
+    border-width: 1px;
+    border-style: solid;
+    padding: 0px 5px;
+    margin-left: -3px;
+    color: rgb(134, 7, 96);
+  }
+  
+  .trending-comic-cover-container{
+    width: 55px;
+    height: 78px;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+  
+  .trending-comic-cover-container:hover{
+    opacity: 0.7;
+  }
+  
+  .trending-comic-cover{
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    transition: transform 0.18s, opacity 0.05s;
+    cursor: pointer;
+  }
+  
+  .trending-comic-cover:hover{
+    transform: scale(1.2);
+  }
+  
+  .trending-comic-cover:active{
+    transform: scale(0.99);
+  }
+  
+  .trending-comic-stats{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1px;
+  }
+  
+  .trending-comic-name{
+    font-size: 17px;
+    color:rgb(134, 7, 96);
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+  
+  .trending-comic-name:hover{
+    transform: scale(1.08);
+  }
+  
+  .trending-comic-name:active{
+    transform: scale(1);
+  }
+  
+  .trending-comic-name a{
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .star-rating-container{
+    display: flex;
+    column-gap: 4px;
+    align-items: center;
+  }
+  
+  .rating-number{
+    font-size: 11px;
+    color: white;
+  }
+  
+  .star-1, .star-2, .star-3, .star-4, .star-5{
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  
+  .star-2, .star-3, .star-4, .star-5{
+    margin-left: -4px;
+  }
+  
+  .star-1:hover, .star-2:hover, .star-3:hover, .star-4:hover, .star-5:hover{
+    transform: rotate(360deg);
+  }
+  .trending-genres{
+    font-size: 13px;
+    width: 180px;
+    color:rgb(134, 7, 96);
+    cursor: pointer;
+  }
+  
+  .trending-comic-genres{
+    margin-left: 3px;
+    color: white;
+  }
+  
+  .footer{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    justify-content: center;
+    align-items: center;
+    background-color:rgb(40, 27, 45);
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 155px;
+    margin-top: 40px;
+    padding: 0px 40px;
+    padding-top: 10px;
+  }
+  
+  .footer-headline{
+    font-size: 20px;
+    color: rgb(134, 7, 96);
+    cursor: pointer;
+    transition: transform 0.2s;
+    font-weight: bold;
+  }
+  
+  .footer-headline:hover{
+    transform: scale(1.2);
+  }
+  
+  .socials{
+    display: flex;
+    column-gap: 20px;
+    list-style: none;
+  }
+  
+  .socials a{
+    text-decoration: none;
+    width: 20px;
+    color: white;
+    transition: transform 0.2s;
+  }
+  
+  .socials a:hover{
+    color:rgb(134, 7, 96);
+    transform: scale(1.9);
+  }
+  
+  .socials a:active{
+    transform: scale(1);
+  }  
