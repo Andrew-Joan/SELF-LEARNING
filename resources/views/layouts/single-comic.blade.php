@@ -24,7 +24,7 @@
 
     {{-- @yield('') berarti semuanya akan tetap saat kita extend kecuali isi yang ada di dalam @yield --}}
     <div> 
-        @yield('container') 
+        @yield('content') 
     </div>
 
     @include('partials.footer')

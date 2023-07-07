@@ -1,6 +1,6 @@
 @extends('layouts.single-comic')
 
-@section('container')
+@section('content')
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <div class="comic-head">
