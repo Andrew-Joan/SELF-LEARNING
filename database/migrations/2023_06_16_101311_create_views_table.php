@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comics', function (Blueprint $table) {
+        Schema::create('views', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id');
-            $table->foreignId('author_id');
-            $table->foreignId('status_id');
-            $table->foreignId('release_id');
-            $table->string('image')->nullable();
-            $table->string('title')->unique();
-            $table->text('synopsis');
+            $table->foreignId('chapter_id')->references('id')->on('chapters')->onDelete('cascade');
+            $table->unsignedBigInteger('view_count');
             $table->timestamps();
         });
     }
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comics');
+        Schema::dropIfExists('views');
     }
 };

@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Genre extends Model
+class View extends Model
 {
     use HasFactory;
 
-    public function comic()
+    protected $guarded = ['id'];
+
+    public function chapter()
     {
-        return $this->belongsToMany(Comic::class, 'comic_genre');
+        return $this->belongsTo(Chapter::class);
     }
 }

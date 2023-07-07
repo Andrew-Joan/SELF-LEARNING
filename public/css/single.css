@@ -1,6 +1,11 @@
-*{
+  *{
     margin: 0;
     padding: 0;
+  }
+
+  a{
+    text-decoration: none;
+    color: white;
   }
   
   body{
@@ -8,8 +13,21 @@
     color: white;
     background-color: rgb(52, 36, 59);
   }
+
+  body::-webkit-scrollbar{
+    width: 15px;
+  }
+
+  body::-webkit-scrollbar-track{
+    background-color: rgb(40, 27, 45);
+  }
+
+  body::-webkit-scrollbar-thumb{
+    background: linear-gradient(#502bb4, rgb(134, 7, 96));
+    border-radius: 10px;
+  }
   
-  .background{
+  .comic-head{
     background-color:rgb(82, 58, 98);
     margin-top: 50px;
     display: flex;
@@ -17,6 +35,13 @@
     justify-content: center;
     padding-bottom: 20px;
     margin-bottom: 20px;
+  }
+
+  .comic-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   
   .single-comic-name{
@@ -44,10 +69,7 @@
   
   .single-comic-stat{
     background-color:rgb(52, 36, 59);
-    padding-left: 30px;
-    padding-top: 18px;
-    padding-bottom: 18px;
-    padding-right: 30px;
+    padding: 18px 30px;
     border-radius: 10px;
   }
   
@@ -68,21 +90,33 @@
   
   .star-value{
     font-size: 18px;
-    margin-top: 3px;
-    margin-bottom: 10px;
+  }
+
+  .bookmark-button{
+    margin-right: 1.1rem;
+    background-color: rgb(73, 5, 97);
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 5px;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .bookmark-button:hover{
+    background-color: rgb(134, 7, 96);
   }
   
-  .indicator-background-container{
+  .indicator-comic-head-container{
     display: flex;
     column-gap: 30px;
   }
-  .indicator-background-1{
+  .indicator-comic-head-1{
     display: flex;
     flex-direction: column;
     row-gap: 10px;
     width: 60px;
   }
-  .indicator-background-2{
+  .indicator-comic-head-2{
     display: flex;
     flex-direction: column;
     row-gap: 10px;
@@ -92,32 +126,36 @@
   .indicator-34{
     display: flex;
     flex-direction: column;
-    row-gap: 40px;
+    align-items: center;
+    row-gap: 2em;
+    max-width: 10em;
   }
-  .indicator-34-flex-1{
-    display: flex;
-    column-gap: 20px;
-  }
-  .indicator-3{
-    display: flex;
-    flex-direction: column;
-    row-gap: 10px;
-  }
-  .indicator-4{
+
+  .indicator-34-flex-1, .indicator-34-flex-2{
     display: flex;
     flex-direction: column;
     row-gap: 10px;
+    align-items: center;
   }
-  
-  .bookmark-symbol{
-    border-left-style: solid;
-    padding-left: 38px;
-    margin-left: -26px;
+
+  .indicator-34-flex-2 .feather{
+    width: 20px;
+    height: 20px;
   }
-  .comment-bookmark-count{
+
+  .indicator-34-flex-2 .small{
+    font-size: 13px;
+  }
+
+  .comic-info-comment, .comic-info-bookmark{
     display: flex;
-    margin-left: -11px;
-    margin-top: -30px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .comic-info-comment{
+    border-right: 1px solid white;
+    padding-right: 1rem;
   }
   
   .count-s1{
@@ -171,6 +209,7 @@
     margin-top: 20px;
     border-radius: 8px;
     width: 660px;
+    height: fit-content;
   }
   
   .latest-synopsis, .latest-chapter-update, .discussion-headline{
@@ -188,16 +227,27 @@
   
   .synopsis-text{
     margin-top: 10px;
+    max-height: 8em;
+    overflow: hidden;
+    box-shadow: 0px 10px 10px -10px;
+    /* transition: 0.5s cubic-bezier(0, 1, 0, 1); */
+  }
+
+  .expand{
+    margin-top: 10px;
+    box-shadow: none;
+    max-height: none !important;
+    /* transition: max-height 1s ease-in-out; */
   }
   
-  .synopsis-show-more{
+  .synopsis-show-more, .chapter-show-more, .comment-show-more{
     text-align: center;
-    border-bottom-style: solid;
+    border-bottom: 1px solid rgb(134, 7, 96);
     border-width: 1px;
-    margin-top: 27px;
+    margin-top: 10px;
   }
   
-  .synopsis-button-show-more{
+  .synopsis-button-show-more, .chapter-button-show-more, .comment-button-show-more{
     background-color:rgb(40, 27, 45);
     color: white;
     border: none;
@@ -265,11 +315,14 @@
     display: flex;
     flex-direction: column;
     row-gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
   }
   
   .chapter-number-container{
     display: flex;
     justify-content: space-between;
+    width: 99%;
     border-style: solid;
     border-width: 1px;
     border-color: rgb(134, 7, 96);
@@ -283,6 +336,8 @@
   .chapter-number-container:hover{
     background-color:rgb(134, 7, 96);
     transform: scale(1.01);
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
   }
   
   .chapter-number-container:active{
@@ -292,14 +347,47 @@
   .chap-number{
     font-size: 14px;
   }
+
+  .single-chapter-info{
+    display: flex;
+    column-gap: 1em;
+  }
+
+  .view-count-style{
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+  }
+
+  .feather {
+    width: 14px;
+    height: 14px;
+  }
   
-  .chap-release-date{
+  .single-chapter-info{
     font-size: 12px;
     color: #888;
   }
   
   .chapter-number-container:hover div{
     color: white;
+  }
+
+  .chapter-container::-webkit-scrollbar {
+    width: 6px; /* Lebar scrollbar */
+  }
+  
+  .chapter-container::-webkit-scrollbar-track {
+    background-color: rgb(40, 27, 45); /* Warna latar belakang track scrollbar */
+  }
+  
+  .chapter-container::-webkit-scrollbar-thumb {
+    background-color: rgb(134, 7, 96); /* Warna thumb scrollbar */
+    border-radius: 5px;
+  }
+  
+  .chapter-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(82, 58, 98); /* Warna thumb scrollbar saat di hover */
   }
   
   .discussion-instruction, .total-comment{
@@ -309,30 +397,27 @@
     margin-bottom: 10px;
   }
   
-  .user-log{
-    margin-top: 10px;
-    font-size: 14px;
-    cursor: pointer;
+  .user-log-span-container {
+    display: inline-block;
   }
   
   .user-log-span{
     transition: color 0.4s;
-  }
-  
-  .user-log-span:hover{
+    cursor: pointer;
     color: rgb(134, 7, 96);
+  }
+
+  .user-log-span:hover{
+    color: white;
   }
   
   .user-img-text{
-    display: flex;
-    margin-top: 10px;
-    column-gap: 10px;
-    overflow: hidden;
-    border-radius: 4px;
+    margin: 0.8em 0;
   }
+
   .user-img{
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     object-fit: cover;
     border-radius: 4px;
     transition: transform 0.25s, opacity 0.2s;
@@ -348,19 +433,7 @@
   .user-img:active{
     transform: scale(0.99);
   }
-  
-  .user-img-text textarea{
-    outline: none;
-    padding-left: 7px;
-    padding-top: 7px;
-  }
-  
-  .post-comment-container{
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
-  }
-  
+
   .post-comment-button{
     padding: 12px 25px;
     background-color:rgb(73, 5, 97);
@@ -369,6 +442,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.4s, color 0.8s, transform 0.2s;
+    border: none;
   }
   
   .post-comment-button:hover{
@@ -378,14 +452,6 @@
   
   .post-comment-button:active{
     transform: scale(0.95);
-  }
-  
-  .user-comment{
-    display: flex;
-    column-gap: 10px;
-    overflow: hidden;
-    border-radius: 4px;
-    margin-bottom: 10px;
   }
   
   .user-comment span{
@@ -407,28 +473,20 @@
     color: rgb(134, 7, 96);
     cursor: pointer;
   }
-
-  .right-container{
-    display: flex;
-    flex-direction: column;
-    background-color:rgb(52, 36, 59);
-    margin-top: 20px;
-    margin-left: 20px;
-    border-radius: 8px;
-  }
   
   .trending-container{
     background-color: rgb(40, 27, 45);
     width: 300px;
     box-sizing: border-box;
-    padding: 0px 20px 2px 20px;
+    padding: 0px 20px 1px 20px;
     margin: 20px 0px 0px 20px;
     border-radius: 8px;
+    height: fit-content;
   }
 
   .trending-headline{
     border-bottom: 1px solid rgb(134, 7, 96);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   
   .trending-duration-container{
@@ -608,8 +666,7 @@
     bottom: 0;
     height: 155px;
     margin-top: 40px;
-    padding: 0px 40px;
-    padding-top: 10px;
+    padding: 10px 40px 0px 40px;
   }
   
   .footer-headline{
@@ -628,6 +685,11 @@
     display: flex;
     column-gap: 20px;
     list-style: none;
+  }
+
+  .socials .feather {
+    width: 24px;
+    height: 24px;
   }
   
   .socials a{
