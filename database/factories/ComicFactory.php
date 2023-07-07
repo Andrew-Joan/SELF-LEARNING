@@ -18,9 +18,11 @@ class ComicFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(mt_rand(1, 2)),
-            'description' => collect($this->faker->paragraphs(1))->map(fn($p) => "<p>$p</p>")->implode(''),
+            'synopsis' => collect($this->faker->paragraphs(5))->map(fn($p) => "<p>$p</p>")->implode(''),
             'author_id' => mt_rand(1, 6),
-            'category_id' => mt_rand(1, 3)
+            'category_id' => mt_rand(1, 3),
+            'release_id' => mt_rand(1, 5),
+            'status_id' => mt_rand(1, 3),
         ];
     }
 }

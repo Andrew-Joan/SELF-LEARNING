@@ -13,7 +13,7 @@
             <a class="nav-link {{ ($active === "comics") ? 'active' : '' }}" href="/comics">All Comics</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/posts">Bookmark</a>
+            <a class="nav-link {{ ($active === "bookmark") ? 'active' : '' }}" href="{{ route('bookmark.index') }}">Bookmark</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/categories">Contact</a>
@@ -27,8 +27,6 @@
                   Welcome back, {{ auth()->user()->name }}
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/dashboard"><i class="bi bi-layout-text-sidebar-reverse"></i> My Dashboard</a></li>
-                  <li><hr class="dropdown-divider"></li>
                   <li>
                     <form action="/logout" method="post">
                       @csrf
