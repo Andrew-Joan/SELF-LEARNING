@@ -20,9 +20,29 @@
               <form method="post" action="{{ route('comics.comic.comment.deleteComment', ['comic' => $comic->id]) }}" class="delete-comment-form" data-comment-id="{{ $comment->id }}">
                 @method('delete')
                 @csrf
-                <button class="border-0 text-danger bg-transparent delete-comment-button" type="button" data-confirm-message="Are you sure?" data-feather="trash-2"></button>
+                <button class="border-0 text-danger bg-transparent delete-comment-button" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-feather="trash-2"></button>
               </form>
             </div>
+
+            {{-- Delete Alert Modal --}}
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="staticBackdropLabel">Delete Comment Alert</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body text-secondary">
+                    Are you sure you want to delete this comment?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmDeleteCommentButton" data-bs-dismiss="modal">Confirm</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{-- End Delete Alert Modal --}}
             @endif
           @endauth
         </div>
