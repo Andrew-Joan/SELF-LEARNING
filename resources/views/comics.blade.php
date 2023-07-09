@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('container')
+@section('content')
     <div class="all-comic-container">
         <div class="row">
             @foreach($comics as $comic)

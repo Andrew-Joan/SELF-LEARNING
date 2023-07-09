@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('container')
+@section('content')
 
     <div class="row justify-content-center align-items-center w-100" style="height: 85vh;">
         <div class="col-lg-5">

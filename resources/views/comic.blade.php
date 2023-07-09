@@ -1,6 +1,6 @@
 @extends('layouts.single-comic')
 
-@section('container')
+@section('content')
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <div class="comic-head">
@@ -184,6 +184,7 @@
     </div>
   </div>
 
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).ready(function() {
@@ -272,7 +273,7 @@
         let commentId = $(this).closest('.delete-comment-form').data('comment-id');
         let confirmMessage = $(this).data('confirm-message');
 
-        if (confirm(confirmMessage)) {
+        $('#confirmDeleteCommentButton').on('click', function() {
           $.ajax({
             url: '{{ route("comics.comic.comment.deleteComment", ["comic" => "' + comicId + '"]) }}',
             type: 'delete',
@@ -291,7 +292,7 @@
               console.log(error);
             }
           });
-        }
+        });
       });
 
       function loadMoreComments() {
