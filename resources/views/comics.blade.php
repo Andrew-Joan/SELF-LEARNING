@@ -1,20 +1,14 @@
-@extends('layouts.main')
+@extends('layouts.comics')
 
 @section('content')
-    <div class="all-comic-container">
-        <div class="row">
-            @foreach($comics as $comic)
-                <div class="col-md-3 mb-4">
-                    <div class="card text-white bg-dark" style="width: 18rem;">
-                        <img class="card-img-top" src="..." alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $comic->title }}</h5>
-                            <p class="card-text">By. {{ $comic->author->username }}.</p>
-                            <a href="#" class="btn btn-light">View Comic</a>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
+    <div class="d-flex gap-3 justify-content-center mt-4">
+        <div class="bookmarked-comics-section">
+            @include('component.__all-comics-component')
+        </div>
+        
+        <div class="trending-comics-section">
+            @include('component.__trending-comics-component')
         </div>
     </div>
 @endsection
+

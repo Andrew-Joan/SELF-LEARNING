@@ -42,6 +42,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     $(document).ready(function() {
+        let totalComics = {{ $total_comics }}
+
         var offset = 10; // kaerna sudah 20 comic yang tampil diawal sebelum dipencet tombol load more
 
         function loadMoreComics() {
@@ -52,6 +54,10 @@
                 success: function(response) {
                     $('#comicsContainer').append(response).slideDown('slow'); // Menambahkan komik-komik baru ke dalam kontainer
                     offset += 10; // Menambahkan offset untuk komik-komik berikutnya
+
+                    if (offset > totalComics) {
+                        $('.latest-load-more').addClass('d-none');
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.log(error); // Menampilkan pesan error (jika ada)

@@ -82,18 +82,18 @@
       </ul>
     </div>
 
-@include('admin.layouts.header')
+    @include('admin.layouts.header')
 
-<div class="container-fluid">
-  <div class="row">
-    @include('admin.layouts.sidebar')
+    <div class="container-fluid">
+      <div class="row">
+        @include('admin.layouts.sidebar')
 
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      @yield('container')
-      @yield('single-js')
-    </main>
-  </div>
-</div>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          @yield('container')
+          @yield('single-js')
+        </main>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
