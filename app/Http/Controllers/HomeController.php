@@ -55,10 +55,13 @@ class HomeController extends Controller
             return $allComics->firstWhere('id', $comicId);
         });
 
+        $totalComics = $allComics->count();
+
         return view('home', [
             "latest_updates" => $latestUpdates,
             "latest_chapter_info" => $latestChapterInfo,
             "trending_comics" => $trendingComics,
+            "total_comics" => $totalComics,
             "active" => 'home',
         ]);
     }

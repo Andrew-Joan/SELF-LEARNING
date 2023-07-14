@@ -22,7 +22,7 @@ use App\Http\Controllers\RegisterController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/load-more-comics', [HomeController::class, 'loadMoreComics'])->name('load-more');
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login', [LoginController::class, 'authenticate']);
 Route::post('/logout', [LoginController::class, 'logout']);
 
@@ -30,7 +30,9 @@ Route::get('/register', [RegisterController::class, 'index']);
 Route::post('/register', [RegisterController::class, 'store']);
 
 Route::prefix('comics')->controller(ComicController::class)->name('comics.')->group(function() {
-    Route::get('/', 'index')->name('index');
+    Route::get('/', 'index')->name('allComics');
+    Route::get('/filter', 'filterComics')->name('filter');
+    
     Route::prefix('/{comic}')->name('comic.')->group(function() {
         Route::get('/', 'show')->name('single');
         Route::get('/chapters/{chapter}', 'read')->name('read');

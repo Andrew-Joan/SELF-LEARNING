@@ -9,6 +9,7 @@ use App\Models\Genre;
 use App\Models\Chapter;
 use App\Models\Comment;
 use App\Models\Category;
+use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,11 +17,116 @@ class ComicController extends Controller
 {
     public function index()
     {
+        $allComics = Comic::has('chapter')->get();
+        $genres = Genre::all();
+        $statuses = Status::all();
+        $categories = Category::all();
+
+        $comicViews = [];
+
+        foreach ($allComics as $comic) {
+            $totalView = 0;
+            foreach ($comic->chapter as $chapter) {
+                if ($chapter->view) {
+                    $totalView += $chapter->view->view_count;
+                }
+            }
+            $comicViews[$comic->id] = $totalView;
+        }
+
+        arsort($comicViews); //sort descending
+        $topComicIds = array_slice(array_keys($comicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
+
+        $trendingComics = collect($topComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+
         return view('comics', [
-            "comics" => Comic::all(), 
-            "active" => 'comics'
+            "comics" => $allComics,
+            "trending_comics" => $trendingComics,
+            "genres" => $genres,
+            "statuses" => $statuses,
+            "categories" => $categories,
+            "active" => 'comics',
         ]);
     }
+
+    public function filterComics(Request $request)
+    {
+        $allComics = Comic::has('chapter')->get();
+        $genres = Genre::all();
+        $statuses = Status::all();
+        $categories = Category::all();
+
+        $comicViews = [];
+
+        foreach ($allComics as $comic) {
+            $totalView = 0;
+            foreach ($comic->chapter as $chapter) {
+                if ($chapter->view) {
+                    $totalView += $chapter->view->view_count;
+                }
+            }
+            $comicViews[$comic->id] = $totalView;
+        }
+
+        arsort($comicViews); //sort descending
+
+        $topComicIds = array_slice(array_keys($comicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
+
+        $trendingComics = collect($topComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+
+        $genresInput = $request->input('genres');
+        $statusId = $request->input('status_id');
+        $categoryId = $request->input('category_id');
+        $orderBy = $request->input('order_by');
+
+        $filteredComic = Comic::has('chapter'); // cuma komik yang punya minimal 1 chapter yang ditampilin
+
+        if ($statusId != 'all') $filteredComic->where('status_id', $statusId);
+
+        if ($categoryId != 'all') $filteredComic->where('category_id', $categoryId);
+
+        if ($genresInput[0] != null) { // ga bisa pake !empty($genresInput) karena ttp dianggep masuk sbagai null
+            // dd($genresInput);
+            $filteredComic->whereHas('genre', function ($query) use ($genresInput) {
+                $query->whereIn('genre_id', $genresInput);
+            });
+        }
+
+        if ($orderBy == 0) {
+            $filteredComic = $filteredComic->orderByDesc(function ($query) {
+                $query->select('updated_at')
+                    ->from('chapters')
+                    ->whereColumn('comic_id', 'comics.id')
+                    ->orderByDesc('updated_at')
+                    ->limit(1);
+            })->get();
+        } else if (in_array($orderBy, [1, 2])) {
+            $orderBy == 1 ? $filteredComic->orderBy('title') : 
+                            $filteredComic->orderByDesc('title');
+            $filteredComic = $filteredComic->get();
+        } else if ($orderBy == 3) {
+            $popularOrderIds = array_slice(array_keys($comicViews), 0);
+
+            $filteredComicCopy = $filteredComic->get();
+            
+            $filteredComic = collect($popularOrderIds)->map(function ($comicId) use ($filteredComicCopy) {
+                return collect($filteredComicCopy)->firstWhere('id', $comicId);
+            })->filter(); //filter() untuk ngilangin index yg isinya null
+        }
+
+        return view('comics', [
+            "comics" => $filteredComic,
+            "trending_comics" => $trendingComics,
+            "genres" => $genres,
+            "statuses" => $statuses,
+            "categories" => $categories,
+            "active" => 'comics',
+        ]);
+    }       
 
     public function show(Comic $comic)
     {
@@ -218,6 +324,7 @@ class ComicController extends Controller
           ->skip($offset)
           ->take(3)
           ->get();
+        
 
         return view('partials._more-comments', [
             "comments" => $comments,
