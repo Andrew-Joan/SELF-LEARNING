@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\View;
 use App\Models\Comic;
 use App\Models\Genre;
 use App\Models\Author;
@@ -10,9 +9,12 @@ use App\Models\Status;
 use App\Models\Chapter;
 use App\Models\Release;
 use App\Models\Category;
+use App\Exports\ComicsExport;
+
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel; // udah ga kepake karena pake exportable di file Exportnya
 
 class AdminController extends Controller
 {
@@ -23,11 +25,24 @@ class AdminController extends Controller
 
     public function allComics()
     {
-        $comics = Comic::orderBy('title', 'asc')->get();
+        $comics = Comic::with('author', 'category')->orderBy('title', 'asc')->get();
 
         return view('admin.comics.index', [
             "comics" => $comics,
+            "statuses" => Status::all(),
+            'categories' => Category::all()
         ]);
+    }
+
+    // download data comic menjadi excel
+    public function comicsExport(Request $request)
+    {
+        $statusId = $request->input('status_id');
+        $categoryId = $request->input('category_id');
+        $dateFrom = $request->input('date_from');
+        $dateTo = $request->input('date_to');
+
+        return (new ComicsExport($statusId, $categoryId, $dateFrom, $dateTo))->download('comics.xlsx');
     }
 
     // Menampilkan tampilan tambah komik dan kirim data yang dibutuhkan

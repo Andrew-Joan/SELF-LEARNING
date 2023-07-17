@@ -50,6 +50,7 @@ Route::prefix('admin')->controller(AdminController::class)->name('admin.')->midd
 
     Route::prefix('comics')->name('comics.')->group(function() {
         Route::get('/', 'allComics')->name('index');
+        Route::get('/export', 'comicsExport')->name('comicsExport');
 
         Route::get('/create', 'create')->name('create');
         Route::get('/create-chapter/{comic}', 'createChapter')->name('createChapter');
