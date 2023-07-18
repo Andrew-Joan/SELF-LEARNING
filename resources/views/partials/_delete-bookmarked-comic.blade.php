@@ -1,6 +1,6 @@
 <div class="latest-comic-container">
     <div class="latest-headline d-flex justify-content-between">
-        <div># Bookmarks</div>
+        <div># Bookmarks ({{ auth()->user()->comic()->count() }})</div>
         <div id="showDeleteBookmark" class="px-1 me-2 bg-danger rounded d-flex align-items-center gap-1" style="cursor: pointer">
             <span data-feather="trash-2" id="trashIcon" class="d-none"></span>
             <span data-feather="x-circle" id="cancelIcon"></span>

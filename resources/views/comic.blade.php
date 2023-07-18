@@ -99,7 +99,7 @@
                     </div>
                     <div class="comic-info-bookmark">
                       <span data-feather="bookmark" class="mb-2"></span>
-                      <div class="small text-center">975K users bookmarked this!</div>
+                      <div class="small text-center">{{ $comic->user()->count() }} users bookmarked this!</div>
                     </div>
                   </div>
                 </div>

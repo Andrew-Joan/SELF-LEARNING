@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $allComics = Comic::all();
+        $allComics = Comic::with('chapter.view', 'genre')->get();
 
         $mostRecentChapterUpdated = Chapter::orderBy('updated_at', 'desc')
                                             ->groupBy('comic_id')

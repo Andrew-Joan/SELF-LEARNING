@@ -11,7 +11,7 @@ class BookmarkController extends Controller
 {
     public function index()
     {
-        $allComics = Comic::all();
+        $allComics = Comic::with('chapter.view', 'genre')->get();
         $bookmarkedComics = auth()->user()->comic()
                             ->select('comics.*')
                             ->leftJoin('chapters', function ($join) {

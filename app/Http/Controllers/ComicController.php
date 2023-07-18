@@ -130,7 +130,7 @@ class ComicController extends Controller
 
     public function show(Comic $comic)
     {
-        $allComics = Comic::all();
+        $allComics = Comic::with('chapter.view', 'genre')->get();
 
         $comicViews = [];
 
@@ -160,6 +160,7 @@ class ComicController extends Controller
             $comicRankings[$comicId] = $rank;
             $rank++;
         }
+
 
         $comicRank = $comicRankings[$comic->id];
        
