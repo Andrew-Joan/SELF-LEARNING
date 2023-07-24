@@ -63,32 +63,34 @@
     <div class="row" id="comicsContainer">
         @foreach($comics as $comic)
             <div class="col mb-4">
-                <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Slider 1"></a> 
+                @if ($comic->image)
+                    <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}"><img src="{{ asset('storage/' . $comic->image) }}" alt="{{ $comic->title }}">
+                @else
+                    <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara"></a> 
+                @endif
                 {{-- Str::limit($yangDiambil, jumlahLimit, kasihApaDibelakangTeksnya) parameter ke 3 nilai defaultnya '...' --}}
                 <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}">
                     <div class="comic-name">{{ Str::limit($comic->title, 15) }}</div>
                 </a> 
                 <div class="chapter-stats-container">
                     @php
-                        $comicInfo = $comic->chapter()->latest('created_at')->first(); // Use `first()` instead of `value()` to retrieve the first record
+                        $comicInfo = $comic->chapter_created_at;
+
+                        $timeWithAgo = $comic->chapter_created_at->diffForHumans();
+                        $timeWithoutAgo = str_replace(' ago', '', $timeWithAgo);
 
                         $chapterReleasedTime = null;
-                        if ($comicInfo) {
-                            $timeWithAgo = $comicInfo->created_at->diffForHumans();
-                            $timeWithoutAgo = str_replace(' ago', '', $timeWithAgo);
-
-                            if ($comicInfo->created_at->diffInDays() < 7)
-                                $chapterReleasedTime = $timeWithoutAgo;
-                            else if ($comicInfo->created_at->diffInYears() < 1)
-                                $chapterReleasedTime = $comicInfo->created_at->format('d M');
-                            else
-                                $chapterReleasedTime = $comicInfo->created_at->format('d M Y');
-                        }
+                        if ($comicInfo->diffInDays() < 7)
+                            $chapterReleasedTime =  $timeWithoutAgo;
+                        else if ($comicInfo->diffInYears() < 1)
+                            $chapterReleasedTime = $comicInfo->format('d M');
+                        else
+                            $chapterReleasedTime = $comicInfo->format('d M Y');
                     @endphp
-                    <a href="{{ $comicInfo ? route('comics.comic.read', ['comic' => $comic->id, 'chapter' => $comicInfo->id]) : '#' }}">
+                    <a href="{{ $comicInfo ? route('comics.comic.read', ['comic' => $comic->id, 'chapter' => $comic->chapter_id]) : '#' }}">
                         <div class="chapter-stats mb-2">
-                            <div class="chapter-number">{{ $comicInfo->number ?? 'No chapter' }}</div>
-                            <div class="released-time">{{ $chapterReleasedTime ?? '-' }}</div>
+                            <div class="chapter-number">{{ $comic->number }}</div>
+                            <div class="released-time">{{ $chapterReleasedTime }}</div>
                         </div>
                     </a>
                 </div>

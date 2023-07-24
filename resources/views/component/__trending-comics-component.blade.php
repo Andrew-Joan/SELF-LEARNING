@@ -19,18 +19,22 @@
     <div class="all-10-trending-comic-container">
         @foreach($trending_comics as $trending_comic)
             <div class="trending-comic-container">
-                <div class="trending-comic-number-cover">
                 <div class="trending-comic-number">
                     {{ $loop->iteration }}
                 </div>
+
                 <div class="trending-comic-cover-container">
-                    <img class="trending-comic-cover" src="../Comic Website/Comic-thumbnail/Volcanic age.png">
+                    @if ($trending_comic->image)
+                        <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}"><img src="{{ asset('storage/' . $trending_comic->image) }}" class="trending-comic-cover" alt="{{ $trending_comic->title }}"></a>
+                    @else
+                        <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" class="trending-comic-cover" alt="Gambar Sementara"></a> 
+                    @endif
                 </div>
-                </div>
+
                 <div class="trending-comic-stats">
                 <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}">
                     <div class="trending-comic-name">
-                        {{ $trending_comic->title }}
+                        {{  Str::limit($trending_comic->title, 20) }}
                     </div>
                 </a>
                 <div class="star-rating-container">

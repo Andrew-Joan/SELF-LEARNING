@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
         {{-- My style --}}
         <link rel="stylesheet" href="/css/bookmark.css">
+        <link rel="stylesheet" href="/css/trending.css">
     </head>
     <body>
         @include('partials.navbar')

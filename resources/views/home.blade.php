@@ -25,11 +25,11 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center mt-4">
         @include('component.__latest-comics-component')
         
-        <div class="right-container">
-            <div class="support-us-section">
+        <div class="ms-4">
+            <div class="support-us-section mb-3">
                 @include('component.__support-us-component')
             </div>
 

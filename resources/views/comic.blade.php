@@ -110,7 +110,7 @@
     </div>
   </div>
 
-  <div class="container">
+  <div class="container mt-4">
     <div class="synopsis-chapter-container">
       <div class="latest-synopsis">
         # Synopsis
@@ -179,7 +179,7 @@
       </div>
     </div>
 
-    <div class="trending-comics-section">
+    <div class="trending-comics-section ms-4">
       @include('component.__trending-comics-component')
     </div>
   </div>
