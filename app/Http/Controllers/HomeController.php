@@ -11,21 +11,38 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $allComics = Comic::with('chapter.view', 'genre')->get();
+        $allComics = Comic::has('chapter')->with('chapter.view', 'genre')->get();
 
-        $mostRecentChapterUpdated = Chapter::orderBy('updated_at', 'desc')
-                                            ->groupBy('comic_id')
-                                            ->pluck('comic_id')
-                                            ->toArray();
+        // $mostRecentChapterUpdated = Chapter::orderBy('updated_at', 'desc')
+        //                                     ->groupBy('comic_id')
+        //                                     ->pluck('comic_id')
+        //                                     ->toArray();
                                             
 
-        $latestUpdates = $allComics->whereIn('id', $mostRecentChapterUpdated)
-                                    ->sortByDesc(function ($comic) use ($mostRecentChapterUpdated) {
-                                        $chapter = Chapter::where('comic_id', $comic->id)
-                                            ->orderBy('updated_at', 'desc')
-                                            ->first();
-                                        return $chapter ? $chapter->updated_at : null;
-                                    })->take(10);
+        // $latestUpdates = $allComics->whereIn('id', $mostRecentChapterUpdated)
+        //                             ->sortByDesc(function ($comic) use ($mostRecentChapterUpdated) {
+        //                                 $chapter = Chapter::where('comic_id', $comic->id)
+        //                                     ->orderBy('created_at', 'desc')
+        //                                     ->first();
+        //                                 return $chapter ? $chapter->created_at : null;
+        //                             })->take(10);
+
+        $latestUpdates = Comic::has('chapter')
+                                ->with('chapter.view', 'genre')
+                                ->leftJoin('chapters', function ($join) {
+                                    $join->on('comics.id', '=', 'chapters.comic_id')
+                                        ->where('chapters.id', '=', function ($query) {
+                                            $query->select('id')
+                                                ->from('chapters')
+                                                ->whereColumn('comics.id', 'chapters.comic_id')
+                                                ->orderByDesc('created_at')
+                                                ->limit(1);
+                                        });
+                                })
+                                ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number')
+                                ->orderByDesc('chapters.created_at')
+                                ->take(10)
+                                ->get();           
                                    
         $latestChapterInfo[] = null;                            
         foreach ($latestUpdates as $latestUpdate) {
@@ -54,7 +71,7 @@ class HomeController extends Controller
         $trendingComics = collect($topComicIds)->map(function ($comicId) use ($allComics) {
             return $allComics->firstWhere('id', $comicId);
         });
-
+        
         $totalComics = $allComics->count();
 
         return view('home', [
@@ -70,21 +87,39 @@ class HomeController extends Controller
     {
         $offset = $request->input('skipComic'); // Mengambil nilai offset dari permintaan Ajax
 
-        $allComics = Comic::all();
+        $allComics = Comic::has('chapter')->with('chapter.view', 'genre')->get(['id', 'title', 'image']);
 
-        $mostRecentChapterUpdated = Chapter::orderBy('updated_at', 'desc')
-            ->groupBy('comic_id')
-            ->pluck('comic_id')
-            ->skip($offset) // Menggunakan offset sebagai skip pada query
-            ->toArray();
+        // $mostRecentChapterUpdated = Chapter::orderBy('updated_at', 'desc')
+        //     ->groupBy('comic_id')
+        //     ->pluck('comic_id')
+        //     ->skip($offset) // Menggunakan offset sebagai skip pada query
+        //     ->toArray();
 
-            $latestUpdates = $allComics->whereIn('id', $mostRecentChapterUpdated)
-            ->sortByDesc(function ($comic) use ($mostRecentChapterUpdated) {
-                $chapter = Chapter::where('comic_id', $comic->id)
-                    ->orderBy('updated_at', 'desc')
-                    ->first();
-                return $chapter ? $chapter->updated_at : null;
-            })->take(10);
+        //     $latestUpdates = $allComics->whereIn('id', $mostRecentChapterUpdated)
+        //     ->sortByDesc(function ($comic) use ($mostRecentChapterUpdated) {
+        //         $chapter = Chapter::where('comic_id', $comic->id)
+        //             ->orderBy('updated_at', 'desc')
+        //             ->first();
+        //         return $chapter ? $chapter->updated_at : null;
+        //     })->take(10);
+
+            $latestUpdates = Comic::has('chapter')
+                                    ->with('chapter.view', 'genre')
+                                    ->leftJoin('chapters', function ($join) {
+                                        $join->on('comics.id', '=', 'chapters.comic_id')
+                                            ->where('chapters.id', '=', function ($query) {
+                                                $query->select('id')
+                                                    ->from('chapters')
+                                                    ->whereColumn('comics.id', 'chapters.comic_id')
+                                                    ->orderByDesc('created_at')
+                                                    ->limit(1);
+                                            });
+                                    })
+                                    ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number')
+                                    ->orderByDesc('chapters.created_at')
+                                    ->skip($offset)
+                                    ->take(10)
+                                    ->get(); 
 
         $latestChapterInfo[] = null;                            
         foreach ($latestUpdates as $latestUpdate) {

@@ -14,6 +14,7 @@
     {{-- My style --}}
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/single.css">
+    <link rel="stylesheet" href="/css/trending.css">
     {{-- trix editor --}}
     <link rel="stylesheet" type="text/css" href="/css/trix.css">
     <script type="text/javascript" src="/js/trix.js"></script>

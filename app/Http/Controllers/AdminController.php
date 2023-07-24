@@ -79,7 +79,7 @@ class AdminController extends Controller
 
         if($request->file('image')) // kalo user masukin image di inputnya, kita ambil imagenya
         {
-            $validatedData['image'] = $request->file('image')->store('post-images');
+            $validatedData['image'] = $request->file('image')->store('comic-images');
         }
 
         $comic = Comic::create(
@@ -164,7 +164,7 @@ class AdminController extends Controller
 
         if($request->file('image')) // kalo user masukin image di inputnya, kita ambil imagenya
         {
-            $validatedData['image'] = $request->file('image')->store('post-images');
+            $validatedData['image'] = $request->file('image')->store('comic-images');
         }
 
         // ga bisa kayak begini karena update itu akan mereturn angka(int), valuenya adalah jumlah row yang keupdate, jadi ga bisa dilakuin manipulasi data.

@@ -1,7 +1,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="latest-comic-container">
     <div class="latest-headline d-flex justify-content-between">
-        <div># Bookmarks ({{ auth()->user()->comic()->count() }})</div>
+        <div># Bookmarks ({{ auth()->user()->comic->count() }})</div>
         <div id="showDeleteBookmark" class="px-1 me-2 bg-danger rounded d-flex align-items-center gap-1" style="cursor: pointer">
             <span data-feather="trash-2" id="trashIcon"></span>
             <span data-feather="x-circle" id="cancelIcon" class="d-none"></span>
@@ -31,22 +31,22 @@
                     </a> 
                     <div class="chapter-stats-container">
                         @php
-                            $bookmarkedComicInfo = $bookmarkedComic->chapter()->latest('created_at');
+                            $bookmarkedComicInfo = $bookmarkedComic->chapter_created_at;
 
-                            $timeWithAgo = $bookmarkedComicInfo->value('created_at')->diffForHumans();
+                            $timeWithAgo = $bookmarkedComic->chapter_created_at->diffForHumans();
                             $timeWithoutAgo = str_replace(' ago', '', $timeWithAgo);
 
                             $chapterReleasedTime = null;
-                            if ($bookmarkedComicInfo->value('created_at')->diffInDays() < 7)
+                            if ($bookmarkedComicInfo->diffInDays() < 7)
                                 $chapterReleasedTime =  $timeWithoutAgo;
-                            else if ($bookmarkedComicInfo->value('created_at')->diffInYears() < 1)
-                                $chapterReleasedTime = $bookmarkedComicInfo->value('created_at')->format('d M');
+                            else if ($bookmarkedComicInfo->diffInYears() < 1)
+                                $chapterReleasedTime = $bookmarkedComicInfo->format('d M');
                             else
-                                $chapterReleasedTime = $bookmarkedComicInfo->value('created_at')->format('d M Y');
+                                $chapterReleasedTime = $bookmarkedComicInfo->format('d M Y');
                         @endphp
-                        <a href="{{ route('comics.comic.read', ['comic' => $bookmarkedComic->id, 'chapter' => $bookmarkedComicInfo->value('id')]) }}">
+                        <a href="{{ route('comics.comic.read', ['comic' => $bookmarkedComic->id, 'chapter' => $bookmarkedComic->chapter_id]) }}">
                             <div class="chapter-stats mb-2">
-                                <div class="chapter-number">{{ $bookmarkedComicInfo->value('number') }}</div>
+                                <div class="chapter-number">{{ $bookmarkedComic->number }}</div>
                                 <div class="released-time">{{ $chapterReleasedTime }}</div>
                             </div>
                         </a>

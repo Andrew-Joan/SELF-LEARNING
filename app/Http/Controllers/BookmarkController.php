@@ -6,26 +6,35 @@ use App\Models\User;
 use App\Models\Comic;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookmarkController extends Controller
 {
     public function index()
     {
-        $allComics = Comic::with('chapter.view', 'genre')->get();
+        $allComics = Comic::with('chapter.view', 'genre')->get(['id', 'title', 'image']);
         $bookmarkedComics = auth()->user()->comic()
-                            ->select('comics.*')
+                            ->with(['chapter' => function ($query) {
+                                $query->latest('created_at');
+                            }])
                             ->leftJoin('chapters', function ($join) {
                                 $join->on('comics.id', '=', 'chapters.comic_id')
                                     ->where('chapters.id', '=', function ($query) {
                                         $query->select('id')
                                             ->from('chapters')
                                             ->whereColumn('comics.id', 'chapters.comic_id')
-                                            ->orderByDesc('updated_at')
+                                            ->orderByDesc('created_at')
                                             ->limit(1);
                                     });
                             })
-                            ->orderByDesc('chapters.updated_at')
-                            ->get(); 
+                            ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number')
+                            ->orderByDesc('chapters.created_at')
+                            ->get()
+                            ->map(function ($comic) {
+                                $comic->chapter_created_at = \Carbon\Carbon::parse($comic->chapter_created_at);
+                                return $comic;
+                            }); // chapter_created_at berbentuk string, maka harus diubah dulu jadi date time 
+                            
 
         $comicViews = [];
 

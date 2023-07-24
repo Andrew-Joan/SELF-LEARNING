@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
         {{-- My style --}}
         <link rel="stylesheet" href="/css/comics.css">
+        <link rel="stylesheet" href="/css/trending.css">
         <link rel="stylesheet" href="/css/virtual-select.min.css">
 
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />

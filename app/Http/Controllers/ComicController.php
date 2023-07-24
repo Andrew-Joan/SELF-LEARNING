@@ -17,7 +17,25 @@ class ComicController extends Controller
 {
     public function index()
     {
-        $allComics = Comic::has('chapter')->get();
+        $allComics = Comic::has('chapter')
+                            ->with('chapter.view', 'genre')
+                            ->leftJoin('chapters', function ($join) {
+                                $join->on('comics.id', '=', 'chapters.comic_id')
+                                    ->where('chapters.id', '=', function ($query) {
+                                        $query->select('id')
+                                            ->from('chapters')
+                                            ->whereColumn('comics.id', 'chapters.comic_id')
+                                            ->orderByDesc('created_at')
+                                            ->limit(1);
+                                    });
+                            })
+                            ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number')
+                            ->get()
+                            ->map(function ($comic) {
+                                $comic->chapter_created_at = \Carbon\Carbon::parse($comic->chapter_created_at);
+                                return $comic;
+                            });
+
         $genres = Genre::all();
         $statuses = Status::all();
         $categories = Category::all();
@@ -53,7 +71,7 @@ class ComicController extends Controller
 
     public function filterComics(Request $request)
     {
-        $allComics = Comic::has('chapter')->get();
+        $allComics = Comic::has('chapter')->with('chapter.view', 'genre')->get(['id', 'title', 'image']);
         $genres = Genre::all();
         $statuses = Status::all();
         $categories = Category::all();
@@ -83,7 +101,19 @@ class ComicController extends Controller
         $categoryId = $request->input('category_id');
         $orderBy = $request->input('order_by');
 
-        $filteredComic = Comic::has('chapter'); // cuma komik yang punya minimal 1 chapter yang ditampilin
+        $filteredComic = Comic::has('chapter')
+                                ->with('chapter.view', 'genre')
+                                ->leftJoin('chapters', function ($join) {
+                                    $join->on('comics.id', '=', 'chapters.comic_id')
+                                        ->where('chapters.id', '=', function ($query) {
+                                            $query->select('id')
+                                                ->from('chapters')
+                                                ->whereColumn('comics.id', 'chapters.comic_id')
+                                                ->orderByDesc('created_at')
+                                                ->limit(1);
+                                        });
+                                })
+                                ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number');
 
         if ($statusId != 'all') $filteredComic->where('status_id', $statusId);
 
@@ -118,6 +148,12 @@ class ComicController extends Controller
             })->filter(); //filter() untuk ngilangin index yg isinya null
         }
 
+        $filteredComic = $filteredComic->map(function ($comic) {
+            $comic->chapter_created_at = \Carbon\Carbon::parse($comic->chapter_created_at);
+            return $comic;
+        });
+
+
         return view('comics', [
             "comics" => $filteredComic,
             "trending_comics" => $trendingComics,
@@ -131,6 +167,8 @@ class ComicController extends Controller
     public function show(Comic $comic)
     {
         $allComics = Comic::with('chapter.view', 'genre')->get();
+
+        $comic = $comic->with('chapter.view')->find($comic->id);
 
         $comicViews = [];
 
@@ -179,10 +217,11 @@ class ComicController extends Controller
         // dd($user->comic);
         // dd($bookmarkedOrNot);
         // nanti chapter ini pake created_at, sementara pake id karena seeder created_atnya sama semua
-        $firstChapter = $comic->chapter()->orderBy('id', 'asc')->first(); 
-        $lastChapter = $comic->chapter()->orderBy('id', 'desc')->first();
+        $firstChapter = $comic->chapter->sortBy('id')->first(); 
 
-        $allChapters = $comic->chapter()->orderBy('id', 'desc')->get();
+        $lastChapter = $comic->chapter->sortByDesc('id')->first();
+
+        $allChapters = $comic->chapter->sortByDesc('id');
         
         $totalComments = Comment::where([
             ['comic_id', $comic->id],

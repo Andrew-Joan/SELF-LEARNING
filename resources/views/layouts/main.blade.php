@@ -14,8 +14,9 @@
     {{-- My style --}}
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/support.css">
+    <link rel="stylesheet" href="/css/trending.css">
     <link rel="stylesheet" href="/css/login.css">
-  
   </head>
   <body>
     
