@@ -15,7 +15,11 @@
             @foreach($bookmarked_comics as $bookmarkedComic)
                 <div class="col mb-4">
                     <div class="position-relative">
-                        <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Slider 1"></a> 
+                        @if ($bookmarkedComic->image)
+                            <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('storage/' . $bookmarkedComic->image) }}" alt="{{ $bookmarkedComic->title }}">
+                        @else
+                            <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara"></a> 
+                        @endif
                         <div class="position-absolute top-0 end-0 bg-danger rounded deleteBookmarkedComic">
                             <form method="post" action="{{ route('bookmark.ajax-remove') }}" class="delete-bookmarked-comic-form" data-bookmarked-comic-id="{{ $bookmarkedComic->id }}">
                                 @method('delete')

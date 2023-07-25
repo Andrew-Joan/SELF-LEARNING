@@ -8,7 +8,11 @@
       <div class="single-comic-name">{{ $comic->title }}</div>
       <div class="single-comic-container">
         <div class="single-comic-img-container">
-            <img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Thumbnail Comic">
+          @if ($comic->image)
+          <img src="{{ asset('storage/' . $comic->image) }}" alt="{{ $comic->title }}">
+          @else
+            <img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara">
+          @endif
         </div>
         @php
           $bgColor = '';
