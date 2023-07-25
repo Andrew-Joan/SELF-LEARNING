@@ -32,8 +32,6 @@ Route::post('/register', [RegisterController::class, 'store']);
 Route::prefix('comics')->controller(ComicController::class)->name('comics.')->group(function() {
     Route::get('/', 'index')->name('allComics');
     Route::get('/filter', 'filterComics')->name('filter');
-    Route::get('/search', 'searchComics')->name('search');
-    Route::get('/show-search', 'showSearch')->name('showSearch');
     
     Route::prefix('/{comic}')->name('comic.')->group(function() {
         Route::get('/', 'show')->name('single');

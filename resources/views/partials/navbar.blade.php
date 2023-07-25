@@ -21,8 +21,8 @@
         </ul>
 
         <ul class="navbar-nav ms-auto">
-          <form action="{{ route('comics.search') }}" method="GET" class="d-flex">
-            <input type="text" name="search" class="form-control rounded-0" style="border-top-left-radius: 0.375rem !important; border-bottom-left-radius: 0.375rem !important;" placeholder="Search" aria-label="Search" aria-describedby="search-addon"/>
+          <form action="{{ route('comics.allComics') }}" method="GET" class="d-flex" autocomplete="off">
+            <input type="text" name="search" class="form-control rounded-0" value="{{ request()->input('search') }}" style="border-top-left-radius: 0.375rem !important; border-bottom-left-radius: 0.375rem !important;" placeholder="Search" aria-label="Search" aria-describedby="search-addon"/>
             <button type="submit" class="btn btn-outline-light rounded-0" style="border-top-right-radius: 0.375rem !important; border-bottom-right-radius: 0.375rem !important;">
               <i class="fa-brands fa-searchengin"></i></button>
           </form>
