@@ -51,11 +51,31 @@ class ComicsExport implements
     //     return Comic::with('author', 'category', 'status')->get();
     // }
 
+    // public function collection()
+    // {
+
+    //     $comicQuery = Comic::with('author', 'category', 'status')
+    //                                 ->whereDate('created_at', '>=', $this->dateFrom)
+    //                                 ->whereDate('created_at', '<=', $this->dateTo);
+
+    //     if ($this->statusId != 'all') {
+    //         $comicQuery->where('status_id', $this->statusId);
+    //     }
+
+    //     if ($this->categoryId != 'all') {
+    //         $comicQuery->where('category_id', $this->categoryId);
+    //     }
+
+    //     $comic = $comicQuery->get();
+        
+    //     return $comic;
+    // }
+
     // fetching data menggunakan query
     public function query()
     {
 
-        $comicQuery = Comic::query()->with('author', 'category', 'status')
+        $comicQuery = Comic::with('author', 'category', 'status')
                                     ->whereDate('created_at', '>=', $this->dateFrom)
                                     ->whereDate('created_at', '<=', $this->dateTo);
 
