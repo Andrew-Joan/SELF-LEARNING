@@ -2,7 +2,11 @@
     @foreach($comments as $comment)
       <div class="mb-3">
         <div class="d-flex gap-2 align-items-center">
-          <img class="user-img" src="../../Channel-profile/exercise 10e.jpg">
+          @if ($comment->user->image)
+            <img src="{{ asset('storage/' . $comment->user->image) }}" class="user-img">
+          @else
+            <img src="{{ asset('assets/UserImage/sad-cat.jpg') }}" class="user-img">
+          @endif
           <div class="user-name-comment">
             <div class="user-name">
               {{ $comment->user->name }}

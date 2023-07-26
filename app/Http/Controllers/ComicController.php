@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Models\User;
 use App\Models\Comic;
 use App\Models\Genre;
 use App\Models\Chapter;
@@ -11,35 +9,28 @@ use App\Models\Comment;
 use App\Models\Category;
 use App\Models\Status;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ComicController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $allComics = Comic::has('chapter')
-                            ->with('chapter.view', 'genre')
-                            ->leftJoin('chapters', function ($join) {
-                                $join->on('comics.id', '=', 'chapters.comic_id')
-                                    ->where('chapters.id', '=', function ($query) {
-                                        $query->select('id')
-                                            ->from('chapters')
-                                            ->whereColumn('comics.id', 'chapters.comic_id')
-                                            ->orderByDesc('created_at')
-                                            ->limit(1);
-                                    });
-                            })
-                            ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number')
-                            ->get()
-                            ->map(function ($comic) {
-                                $comic->chapter_created_at = \Carbon\Carbon::parse($comic->chapter_created_at);
-                                return $comic;
-                            });
+        $search = $request->input('search');
+        $allComicsQuery = $this->getComicsWithLatestChapter();
+
+        if ($request->has('search') && !empty($request->input('search'))) {
+            $allComicsQuery->where('title', 'like', '%' . $search . '%');
+        }
+
+        $paginatedComics = $allComicsQuery->paginate(15)->withQueryString(); //withQueryString() ini biar pas pindah halaman, searchnya tidak kereplace.
+        
+        // perlu diubah chapter_created_at nya karena bentuknya masih string
+        $paginatedComics = $this->changeStringDateToDateFormat($paginatedComics);
 
         $genres = Genre::all();
         $statuses = Status::all();
         $categories = Category::all();
 
+        $allComics = Comic::has('chapter')->with('chapter.view', 'genre')->get();
         $comicViews = [];
 
         foreach ($allComics as $comic) {
@@ -60,7 +51,7 @@ class ComicController extends Controller
         });
 
         return view('comics', [
-            "comics" => $allComics,
+            "comics" => $paginatedComics,
             "trending_comics" => $trendingComics,
             "genres" => $genres,
             "statuses" => $statuses,
@@ -71,7 +62,7 @@ class ComicController extends Controller
 
     public function filterComics(Request $request)
     {
-        $allComics = Comic::has('chapter')->with('chapter.view', 'genre')->get(['id', 'title', 'image']);
+        $allComics = Comic::has('chapter')->with('chapter.view', 'genre')->get();
         $genres = Genre::all();
         $statuses = Status::all();
         $categories = Category::all();
@@ -101,26 +92,14 @@ class ComicController extends Controller
         $categoryId = $request->input('category_id');
         $orderBy = $request->input('order_by');
 
-        $filteredComic = Comic::has('chapter')
-                                ->with('chapter.view', 'genre')
-                                ->leftJoin('chapters', function ($join) {
-                                    $join->on('comics.id', '=', 'chapters.comic_id')
-                                        ->where('chapters.id', '=', function ($query) {
-                                            $query->select('id')
-                                                ->from('chapters')
-                                                ->whereColumn('comics.id', 'chapters.comic_id')
-                                                ->orderByDesc('created_at')
-                                                ->limit(1);
-                                        });
-                                })
-                                ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number');
+        $filteredComic = $this->getComicsWithLatestChapter();
 
         if ($statusId != 'all') $filteredComic->where('status_id', $statusId);
 
         if ($categoryId != 'all') $filteredComic->where('category_id', $categoryId);
 
-        if ($genresInput[0] != null) { // ga bisa pake !empty($genresInput) karena ttp dianggep masuk sbagai null
-            // dd($genresInput);
+        if(!$genresInput) $genresInput[0] = null; // ini cuma dipake biar pas pagination tidak muncul Trying to access array offset on value of type null 
+        else if ($genresInput[0]) { // ga bisa pake !empty($genresInput) karena ttp dianggep masuk sbagai null       
             $filteredComic->whereHas('genre', function ($query) use ($genresInput) {
                 $query->whereIn('genre_id', $genresInput);
             });
@@ -133,11 +112,11 @@ class ComicController extends Controller
                     ->whereColumn('comic_id', 'comics.id')
                     ->orderByDesc('updated_at')
                     ->limit(1);
-            })->get();
+            })->paginate(15)->withQueryString();
         } else if (in_array($orderBy, [1, 2])) {
             $orderBy == 1 ? $filteredComic->orderBy('title') : 
                             $filteredComic->orderByDesc('title');
-            $filteredComic = $filteredComic->get();
+            $filteredComic = $filteredComic->paginate(15)->withQueryString();
         } else if ($orderBy == 3) {
             $popularOrderIds = array_slice(array_keys($comicViews), 0);
 
@@ -145,14 +124,10 @@ class ComicController extends Controller
             
             $filteredComic = collect($popularOrderIds)->map(function ($comicId) use ($filteredComicCopy) {
                 return collect($filteredComicCopy)->firstWhere('id', $comicId);
-            })->filter(); //filter() untuk ngilangin index yg isinya null
+            })->filter()->paginate(15)->withQueryString(); //filter() untuk ngilangin index yg isinya null
         }
 
-        $filteredComic = $filteredComic->map(function ($comic) {
-            $comic->chapter_created_at = \Carbon\Carbon::parse($comic->chapter_created_at);
-            return $comic;
-        });
-
+        $filteredComic = $this->changeStringDateToDateFormat($filteredComic);
 
         return view('comics', [
             "comics" => $filteredComic,
@@ -162,7 +137,48 @@ class ComicController extends Controller
             "categories" => $categories,
             "active" => 'comics',
         ]);
-    }       
+    }      
+
+    public function getComicsWithLatestChapter()
+    {
+        $comics = Comic::has('chapter')
+                            ->with('chapter.view', 'genre')
+                            ->leftJoin('chapters', function ($join) {
+                                $join->on('comics.id', '=', 'chapters.comic_id')
+                                    ->where('chapters.id', '=', function ($query) {
+                                        $query->select('id')
+                                            ->from('chapters')
+                                            ->whereColumn('comics.id', 'chapters.comic_id')
+                                            ->orderByDesc('created_at')
+                                            ->limit(1);
+                                    });
+                            })
+                            ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number');
+        return $comics;
+    }
+
+    public function changeStringDateToDateFormat($comics)
+    {
+        $comics->map(function ($comic) {
+            $comic->chapter_created_at = \Carbon\Carbon::parse($comic->chapter_created_at);
+            
+            $comicInfo = $comic->chapter_created_at;
+
+            $timeWithAgo = $comic->chapter_created_at->diffForHumans();
+            $timeWithoutAgo = str_replace(' ago', '', $timeWithAgo);
+
+            if ($comicInfo->diffInDays() < 7)
+                $comic->chapter_created_at =  $timeWithoutAgo;
+            else if ($comicInfo->diffInYears() < 1)
+                $comic->chapter_created_at = $comicInfo->format('d M');
+            else
+                $comic->chapter_created_at = $comicInfo->format('d M Y');
+
+            return $comic;
+        });
+
+        return $comics;
+    }
 
     public function show(Comic $comic)
     {
@@ -199,9 +215,7 @@ class ComicController extends Controller
             $rank++;
         }
 
-
         $comicRank = $comicRankings[$comic->id];
-       
 
         // $totalView = 0;
         // foreach ($comic->chapter as $singleChapter) {
@@ -254,7 +268,6 @@ class ComicController extends Controller
         
         return back();
     }
-
 
     public function storeComment(Request $request)
     {

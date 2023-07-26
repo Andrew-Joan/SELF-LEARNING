@@ -4,7 +4,7 @@
 
 <div class="all-comic-container">
     <div class="comics-headline mb-1">
-        <div># Comic Lists</div>
+        <div># Comic Lists ({{ $comics->total() }})</div>
     </div>
     <div class="filter mb-2">
         <div>
@@ -23,7 +23,6 @@
                         @endforeach 
                     </select> --}}
                 </div>
-                
 
                 <div>
                     <select class="form-select" name="status_id">
@@ -73,29 +72,22 @@
                     <div class="comic-name">{{ Str::limit($comic->title, 15) }}</div>
                 </a> 
                 <div class="chapter-stats-container">
-                    @php
-                        $comicInfo = $comic->chapter_created_at;
-
-                        $timeWithAgo = $comic->chapter_created_at->diffForHumans();
-                        $timeWithoutAgo = str_replace(' ago', '', $timeWithAgo);
-
-                        $chapterReleasedTime = null;
-                        if ($comicInfo->diffInDays() < 7)
-                            $chapterReleasedTime =  $timeWithoutAgo;
-                        else if ($comicInfo->diffInYears() < 1)
-                            $chapterReleasedTime = $comicInfo->format('d M');
-                        else
-                            $chapterReleasedTime = $comicInfo->format('d M Y');
-                    @endphp
-                    <a href="{{ $comicInfo ? route('comics.comic.read', ['comic' => $comic->id, 'chapter' => $comic->chapter_id]) : '#' }}">
+                    <a href="{{ route('comics.comic.read', ['comic' => $comic->id, 'chapter' => $comic->chapter_id]) }}">
                         <div class="chapter-stats mb-2">
                             <div class="chapter-number">{{ $comic->number }}</div>
-                            <div class="released-time">{{ $chapterReleasedTime }}</div>
+                            <div class="released-time">{{ $comic->chapter_created_at }}</div>
                         </div>
                     </a>
                 </div>
             </div>
         @endforeach
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between pb-2">
+        @if ($comics->total() > 15) 
+            Showing {{ $comics->firstItem() }} to {{ $comics->lastItem() }} of {{ $comics->total() }} results.
+        @endif
+        {{ $comics->links() }}
     </div>
 </div>
 
