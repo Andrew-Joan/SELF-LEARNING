@@ -144,8 +144,8 @@ class ComicController extends Controller
         $comics = Comic::has('chapter')
                             ->with('chapter.view', 'genre')
                             ->leftJoin('chapters', function ($join) {
-                                $join->on('comics.id', '=', 'chapters.comic_id')
-                                    ->where('chapters.id', '=', function ($query) {
+                                $join->on('comics.id', 'chapters.comic_id')
+                                    ->where('chapters.id', function ($query) {
                                         $query->select('id')
                                             ->from('chapters')
                                             ->whereColumn('comics.id', 'chapters.comic_id')
