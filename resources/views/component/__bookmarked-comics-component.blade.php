@@ -10,54 +10,38 @@
     </div>
 
     <div class="row" id="comicsContainer">
-        @if ($bookmarked_comics->count() === 0)
-            <h3 class="text-center mb-2">You Have No Bookmarked Comics.</h3>
-        @else
-            @foreach($bookmarked_comics as $bookmarkedComic)
-                <div class="col mb-4">
-                    <div class="position-relative">
-                        @if ($bookmarkedComic->image)
-                            <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('storage/' . $bookmarkedComic->image) }}" alt="{{ $bookmarkedComic->title }}">
-                        @else
-                            <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara"></a> 
-                        @endif
-                        <div class="position-absolute top-0 end-0 bg-danger rounded d-none deleteBookmarkedComic">
-                            <form method="post" action="{{ route('bookmark.ajax-remove') }}" class="delete-bookmarked-comic-form" data-bookmarked-comic-id="{{ $bookmarkedComic->id }}">
-                                @method('delete')
-                                @csrf
-                                <button class="border-0 delete-bookmarked-comic-button" type="button" data-feather="trash-2" style="width: 27px; height: 27px; padding-bottom: 2px"></button>
-                            </form>
-                        </div>
-                    </div>
-                    {{-- Str::limit($yangDiambil, jumlahLimit, kasihApaDibelakangTeksnya) parameter ke 3 nilai defaultnya '...' --}}
-                    <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}">
-                        <div class="comic-name">{{ Str::limit($bookmarkedComic->title, 15) }}</div>
-                    </a> 
-                    <div class="chapter-stats-container">
-                        @php
-                            $bookmarkedComicInfo = $bookmarkedComic->chapter_created_at;
-
-                            $timeWithAgo = $bookmarkedComic->chapter_created_at->diffForHumans();
-                            $timeWithoutAgo = str_replace(' ago', '', $timeWithAgo);
-
-                            $chapterReleasedTime = null;
-                            if ($bookmarkedComicInfo->diffInDays() < 7)
-                                $chapterReleasedTime =  $timeWithoutAgo;
-                            else if ($bookmarkedComicInfo->diffInYears() < 1)
-                                $chapterReleasedTime = $bookmarkedComicInfo->format('d M');
-                            else
-                                $chapterReleasedTime = $bookmarkedComicInfo->format('d M Y');
-                        @endphp
-                        <a href="{{ route('comics.comic.read', ['comic' => $bookmarkedComic->id, 'chapter' => $bookmarkedComic->chapter_id]) }}">
-                            <div class="chapter-stats mb-2">
-                                <div class="chapter-number">{{ $bookmarkedComic->number }}</div>
-                                <div class="released-time">{{ $chapterReleasedTime }}</div>
-                            </div>
-                        </a>
+        @forelse($bookmarked_comics as $bookmarkedComic)
+            <div class="col mb-4">
+                <div class="position-relative">
+                    @if ($bookmarkedComic->image)
+                        <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('storage/' . $bookmarkedComic->image) }}" alt="{{ $bookmarkedComic->title }}"></a>
+                    @else
+                        <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara"></a> 
+                    @endif
+                    <div class="position-absolute top-0 end-0 bg-danger rounded d-none deleteBookmarkedComic">
+                        <form method="post" action="{{ route('bookmark.ajax-remove') }}" class="delete-bookmarked-comic-form" data-bookmarked-comic-id="{{ $bookmarkedComic->id }}">
+                            @method('delete')
+                            @csrf
+                            <button class="border-0 delete-bookmarked-comic-button" type="button" data-feather="trash-2" style="width: 27px; height: 27px; padding-bottom: 2px"></button>
+                        </form>
                     </div>
                 </div>
-            @endforeach
-        @endif
+                {{-- Str::limit($yangDiambil, jumlahLimit, kasihApaDibelakangTeksnya) parameter ke 3 nilai defaultnya '...' --}}
+                <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}">
+                    <div class="comic-name">{{ Str::limit($bookmarkedComic->title, 15) }}</div>
+                </a> 
+                <div class="chapter-stats-container">
+                    <a href="{{ route('comics.comic.read', ['comic' => $bookmarkedComic->id, 'chapter' => $bookmarkedComic->chapter_id]) }}">
+                        <div class="chapter-stats mb-2">
+                            <div class="chapter-number">{{ $bookmarkedComic->number }}</div>
+                            <div class="released-time">{{ $bookmarkedComic->chapter_created_at }}</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        @empty
+            <h3 class="text-center mb-2">You Have No Bookmarked Comics.</h3>
+        @endforelse
     </div>
 </div>
 

@@ -60,7 +60,7 @@
     </div>
 
     <div class="row" id="comicsContainer">
-        @foreach($comics as $comic)
+        @forelse($comics as $comic)
             <div class="col mb-4">
                 @if ($comic->image)
                     <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}"><img src="{{ asset('storage/' . $comic->image) }}" alt="{{ $comic->title }}">
@@ -80,7 +80,9 @@
                     </a>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <h3 class="text-center">No Comic Found</h3>
+        @endforelse
     </div>
 
     <div class="d-flex align-items-center justify-content-between pb-2">

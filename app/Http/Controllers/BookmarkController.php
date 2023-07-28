@@ -13,28 +13,9 @@ class BookmarkController extends Controller
     public function index()
     {
         $allComics = Comic::with('chapter.view', 'genre')->get(['id', 'title', 'image']);
-        $bookmarkedComics = auth()->user()->comic()
-                            ->with(['chapter' => function ($query) {
-                                $query->latest('created_at');
-                            }])
-                            ->leftJoin('chapters', function ($join) {
-                                $join->on('comics.id', '=', 'chapters.comic_id')
-                                    ->where('chapters.id', '=', function ($query) {
-                                        $query->select('id')
-                                            ->from('chapters')
-                                            ->whereColumn('comics.id', 'chapters.comic_id')
-                                            ->orderByDesc('created_at')
-                                            ->limit(1);
-                                    });
-                            })
-                            ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number')
-                            ->orderByDesc('chapters.created_at')
-                            ->get()
-                            ->map(function ($comic) {
-                                $comic->chapter_created_at = \Carbon\Carbon::parse($comic->chapter_created_at);
-                                return $comic;
-                            }); // chapter_created_at berbentuk string, maka harus diubah dulu jadi date time 
-                            
+        $bookmarkedComics = $this->getBookmarkedComicsWithLatestChapter();
+
+        $bookmarkedComics = $this->changeStringDateToDateFormat($bookmarkedComics);
 
         $comicViews = [];
 
@@ -65,7 +46,8 @@ class BookmarkController extends Controller
     public function attach(Comic $comic)
     {
         $user = auth()->user();
-        $user->comic()->attach($comic->id);
+        if(!$user->comic->find($comic)) // tambahin kondisi ini karena bisa jadi user pencet bookmark comic buttonnya berkali kali sebelum pagenya keload, jadi banyak duplikat.
+            $user->comic()->attach($comic->id); 
 
         return back();
     }
@@ -84,24 +66,57 @@ class BookmarkController extends Controller
         $user = auth()->user();
         $user->comic()->detach($bookmarkedComicId);
 
-        $bookmarkedComics = auth()->user()->comic()
-                            ->select('comics.*')
-                            ->leftJoin('chapters', function ($join) {
-                                $join->on('comics.id', '=', 'chapters.comic_id')
-                                    ->where('chapters.id', '=', function ($query) {
-                                        $query->select('id')
-                                            ->from('chapters')
-                                            ->whereColumn('comics.id', 'chapters.comic_id')
-                                            ->orderByDesc('updated_at')
-                                            ->limit(1);
-                                    });
-                            })
-                            ->orderByDesc('chapters.updated_at')
-                            ->get(); 
+        $bookmarkedComics = $this->getBookmarkedcomicsWithLatestChapter();
+
+        $bookmarkedComics = $this->changeStringDateToDateFormat($bookmarkedComics);
 
         return view('partials._delete-bookmarked-comic', [
             'bookmarked_comics' => $bookmarkedComics,
             'active' => 'bookmark',
         ]);
+    }
+
+    public function getBookmarkedcomicsWithLatestChapter()
+    {
+        $comics = auth()->user()->comic()
+            ->with('chapter.view', 'genre')
+            ->leftJoin('chapters', function ($join) {
+                $join->on('comics.id', 'chapters.comic_id')
+                    ->where('chapters.id', function ($query) {
+                        $query->select('id')
+                            ->from('chapters')
+                            ->whereColumn('comics.id', 'chapters.comic_id')
+                            ->orderByDesc('created_at')
+                            ->limit(1);
+                    });
+            })
+            ->select('comics.*', 'chapters.id as chapter_id', 'chapters.created_at AS chapter_created_at', 'chapters.number')
+            ->orderByDesc('chapters.created_at')
+            ->get();
+
+        return $comics;
+    }
+
+    public function changeStringDateToDateFormat($comics)
+    {
+        $comics->map(function ($comic) {
+            $comic->chapter_created_at = \Carbon\Carbon::parse($comic->chapter_created_at);
+            
+            $comicInfo = $comic->chapter_created_at;
+
+            $timeWithAgo = $comic->chapter_created_at->diffForHumans();
+            $timeWithoutAgo = str_replace(' ago', '', $timeWithAgo);
+
+            if ($comicInfo->diffInDays() < 7)
+                $comic->chapter_created_at =  $timeWithoutAgo;
+            else if ($comicInfo->diffInYears() < 1)
+                $comic->chapter_created_at = $comicInfo->format('d M');
+            else
+                $comic->chapter_created_at = $comicInfo->format('d M Y');
+
+            return $comic;
+        });
+
+        return $comics;
     }
 }
