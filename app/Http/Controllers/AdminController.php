@@ -10,7 +10,7 @@ use App\Models\Chapter;
 use App\Models\Release;
 use App\Models\Category;
 use App\Exports\ComicsExport;
-use App\Http\Requests\Comic\StoreComicRequest;
+use App\Http\Requests\Comic\StoreUpdateComicRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -57,7 +57,7 @@ class AdminController extends Controller
     }
 
     // Validasi dan aksi nambahin komik
-    public function store(StoreComicRequest $request)
+    public function store(StoreUpdateComicRequest $request)
     {
         $validatedData = $request->validated();
         $validatedData['author_id'] = $request->getAuthorId();
@@ -123,30 +123,11 @@ class AdminController extends Controller
     }
     
     // Validasi dan aksi update komik
-    public function update(Comic $comic, Request $request)
+    public function update(Comic $comic, StoreUpdateComicRequest $request)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|max:255|unique:comics,title,' . $comic->id, // jadi dirow ini ga dicek uniknya, karena kalo engga nanti dibilang udah kepake padahal emang ga mau ganti namanya
-            'author_id' => 'required', // ini awal isinya text
-            'category_id' => 'required',
-            'status_id' => 'required',
-            'release_id' => 'required',
-            'image' => 'image|file|max:1024', //|file|max:... ini ngasih constraint maksimum ukuran file yang bs dimasukkan. //image| artinya input ini hanya menerima image, tidak bisa dimasukkan file lain seperti pdf dll
-            'synopsis' => 'required',
-            'genres' => 'required|array|min:1',
-        ]);
-        // ambil text yang dikirim di input author
-        $getAuthor = $request->input('author_id');
-        // cek apakah nama yang diambil itu ada di table author apa engga, kalo ada return instance authornya, kalo engga ada return juga tapi create data author baru
-        $authorName = Author::firstOrCreate(['name' => $getAuthor]);
-        // assign value author_id yang tadinya text jadi id yang bener
-        $validatedData['author_id'] = $authorName->id;
-        
-
-        if($request->file('image')) // kalo user masukin image di inputnya, kita ambil imagenya
-        {
-            $validatedData['image'] = $request->file('image')->store('comic-images');
-        }
+        $validatedData = $request->validated();
+        $validatedData['author_id'] = $request->getAuthorId();
+        $validatedData['image'] = $request->storeImage();
 
         // ga bisa kayak begini karena update itu akan mereturn angka(int), valuenya adalah jumlah row yang keupdate, jadi ga bisa dilakuin manipulasi data.
         // $comic = Comic::where('id', $comic->id)
@@ -158,15 +139,12 @@ class AdminController extends Controller
         $addGenres = $request->input('genres');
         $comic->genre()->sync($addGenres); // Attach the selected genres to the updated comic
 
-        return redirect(route('admin.comics.index'))->with('success', 'New Comic has been added!');
+        return redirect(route('admin.comics.index'))->with('success', 'Comic has been updated!');
     }
 
     public function delete(Comic $comic)
     {
-        if($comic->image)
-        {
-            Storage::delete($comic->image);
-        }
+        if($comic->image) Storage::delete($comic->image);
 
         Comic::destroy($comic->id);
 

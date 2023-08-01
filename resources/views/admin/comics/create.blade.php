@@ -17,7 +17,7 @@
     <form method="post" action="{{ route('admin.comics.store') }}" class="mb-5" enctype="multipart/form-data"> 
         @csrf
         {{-- Sempet pake untuk deteksi error --}}
-        @if(count($errors) > 0)
+        {{-- @if(count($errors) > 0)
         <div class="alert alert-danger">
             <ul>
                 @foreach($errors->all() as $error)
@@ -25,7 +25,7 @@
                 @endforeach
             </ul>
         </div>
-        @endif
+        @endif --}}
 
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>

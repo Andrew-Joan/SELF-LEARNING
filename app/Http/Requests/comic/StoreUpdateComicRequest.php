@@ -5,7 +5,7 @@ namespace App\Http\Requests\comic;
 use App\Models\Author;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreComicRequest extends FormRequest
+class StoreUpdateComicRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,13 @@ class StoreComicRequest extends FormRequest
      */
     public function rules(): array
     {
+        $titleRules = 'required|max:255|unique:comics';
+        
+        $comic = $this->route('comic');
+        if ($this->getMethod() == 'PUT') $titleRules = 'required|max:255|unique:comics,title,' . $comic->id; // kalo dikasesnya put berarti ini mau update data, karena semuanya sama kecuali rules title, maka file Requestnya digabung aja
+
         return [
-            'title' => 'required|max:255|unique:comics',
+            'title' => $titleRules,
             'author_id' => 'required', // ini awal isinya text
             'category_id' => 'required',
             'status_id' => 'required',
