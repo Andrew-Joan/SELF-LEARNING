@@ -12,6 +12,13 @@
             </div>
             @endif
 
+            @if(session()->has('status'))
+                    <div class="alert alert-success alert-dismissible fade show" role ="alert">
+                        {{ session('status') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+            @endif
+
 
             @if(session()->has('loginError'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -38,6 +45,7 @@
                         <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
                         <label for="floatingPassword">Password</label>
                     </div>
+                    <div class="d-flex justify-content-end mb-2"><a href="{{ route('password.request') }}" class="text-danger">Forgot Password?</a></div>
         
                     <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
                 </form>

@@ -12,7 +12,7 @@
           @endif
           <div class="user-name-comment">
             <div class="user-name">
-              {{ $comment->user->name }}
+              {{ $comment->user->username }}
             </div>
             <div class="text-secondary small">{{ $comment->created_at->format('d M Y') }}</div>
           </div>

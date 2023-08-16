@@ -36,11 +36,18 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <form action="/logout" method="post">
-                      @csrf
-                      <button class="dropdown-item" type="submit">
-                        <i class="bi bi-box-arrow-right"></i> Logout</button>
-                    </form>
+                    <a href="{{ route('profile.index', ['user' => auth()->id()]) }}" class="d-flex align-items-center justify-content-center text-dark gap-2">
+                      <i class="fa fa-user"></i> <div>Profile</div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="d-flex align-items-center justify-content-center">
+                      <form action="/logout" method="post">
+                        @csrf
+                        <button class="dropdown-item" type="submit">
+                          <i class="bi bi-box-arrow-right"></i> Logout</button>
+                      </form>
+                    </div>
                   </li>
                 </ul>
               </li>

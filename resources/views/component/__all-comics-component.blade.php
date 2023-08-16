@@ -65,7 +65,7 @@
                 @if ($comic->image)
                     <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}"><img src="{{ asset('storage/' . $comic->image) }}" alt="{{ $comic->title }}">
                 @else
-                    <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara"></a> 
+                    <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}"><img src="{{ asset('assets/ComicImage/coming-soon.jfif') }}" alt="Gambar Sementara"></a> 
                 @endif
                 {{-- Str::limit($yangDiambil, jumlahLimit, kasihApaDibelakangTeksnya) parameter ke 3 nilai defaultnya '...' --}}
                 <a href="{{ route('comics.comic.single', ['comic' => $comic->id]) }}">

@@ -11,7 +11,7 @@
           @if ($comic->image)
           <img src="{{ asset('storage/' . $comic->image) }}" alt="{{ $comic->title }}">
           @else
-            <img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara">
+            <img src="{{ asset('assets/ComicImage/coming-soon.jfif') }}" alt="Gambar Sementara">
           @endif
         </div>
         @php
@@ -141,7 +141,7 @@
       <div class="user-log mb-2 d-flex align-items-center">
         <span>
           @auth
-            <img class="user-img" src="../../Comic Website/logo/Kraken logo">
+            <img class="user-img" src="{{ asset('storage/' . auth()->user()->image) }}">
             Logged in as {{ auth()->user()->name }}.
             <span class="user-log-span-container">
               <form action="/logout" method="post">

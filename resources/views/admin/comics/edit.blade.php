@@ -103,9 +103,14 @@
                 @endforeach
             </select>
         </div>
+
         <div class="mb-3">
             <label for="image" class="form-label">Comic Thumbnail</label>
-            <img class="img-preview img-fluid mb-3 col-sm-5 d-block">
+            @if($comic->image)
+                <img src="{{ asset('storage/' . $comic->image) }}" class="img-preview img-fluid mb-3 col-sm-5 d-block">
+            @else
+                <img class="img-preview img-fluid mb-3 col-sm-5 d-block">
+            @endif
             <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" onchange="previewImage()">
             @error('image')
                 <div class="invalid-feedback">
@@ -113,6 +118,7 @@
                 </div>
             @enderror
         </div>
+
         <div class="mb-3">
             <label for="synopsis" class="form-label">Synopsis</label>
             @error('synopsis')
@@ -135,5 +141,13 @@
         });
 
     });
+
+    function previewImage()
+    {
+        const img = document.querySelector("#image");
+        const imgPreview = document.querySelector(".img-preview");
+        const blob = URL.createObjectURL(image.files[0]);
+        imgPreview.src = blob;
+    }
 </script>
 @endsection

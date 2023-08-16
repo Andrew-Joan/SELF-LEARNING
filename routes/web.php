@@ -5,7 +5,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ComicController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\RegisterController;
 
 /*
@@ -76,3 +78,15 @@ Route::prefix('/bookmark')->controller(BookmarkController::class)->name('bookmar
 }); 
 // tidak tahu kenapa jika ini digabung kedalam group dengan prefix /bookmark, nanti di consolenya dibilang not found, padahal route dan controllernya sudah ada
 Route::delete('/ajax-delete', [BookmarkController::class, 'removeFromBookmark'])->name('bookmark.ajax-remove');
+
+Route::prefix('/profile')->controller(ProfileController::class)->name('profile.')->middleware('auth')->group(function() {
+    Route::get('/{user}', 'index')->name('index');
+    Route::patch('/{user}/update', 'updateProfile')->name('update');
+});
+
+Route::controller(PasswordController::class)->name('password.')->middleware('guest')->group(function() {
+    Route::get('/forgot-password', 'index')->name('request');
+    Route::post('/forgot-password', 'sendEmail')->name('email');
+    Route::get('/reset-password/{token}', 'passwordResetView')->name('reset');
+    Route::post('/reset-password', 'passwordUpdate')->name('update');
+});

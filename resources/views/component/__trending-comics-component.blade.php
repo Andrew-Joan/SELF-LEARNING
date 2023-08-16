@@ -27,7 +27,7 @@
                     @if ($trending_comic->image)
                         <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}"><img src="{{ asset('storage/' . $trending_comic->image) }}" class="trending-comic-cover" alt="{{ $trending_comic->title }}"></a>
                     @else
-                        <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" class="trending-comic-cover" alt="Gambar Sementara"></a> 
+                        <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}"><img src="{{ asset('assets/ComicImage/coming-soon.jfif') }}" class="trending-comic-cover" alt="Gambar Sementara"></a> 
                     @endif
                 </div>
 
