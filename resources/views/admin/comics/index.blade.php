@@ -15,6 +15,17 @@
     <div class="table-responsive col-lg-8 mb-5">
       <div class="d-flex justify-content-between">
         <a href="{{ route('admin.comics.create') }}" class="btn btn-primary mb-3">Add New Comics</a>
+        
+        <form action="{{ route('admin.comics.reset.weekly') }}" method="POST">
+          @csrf
+          <button type="submit" class="btn btn-danger" onclick="return confirm('Do You Want To Reset The Weekly View For All Comics?')">Reset Weekly Comics View</button>
+        </form>
+
+        <form action="{{ route('admin.comics.reset.monthly') }}" method="POST">
+          @csrf
+          <button type="submit" class="btn btn-danger" onclick="return confirm('Do You Want To Reset The Monthly View For All Comics?')">Reset Monthly Comics View</button>
+        </form>
+      
         <div class="btn btn-success mb-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Download as Excel <span data-feather="download"></span></div>
       </div>
 

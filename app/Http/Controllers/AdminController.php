@@ -11,6 +11,7 @@ use App\Models\Release;
 use App\Models\Category;
 use App\Exports\ComicsExport;
 use App\Http\Requests\Comic\StoreUpdateComicRequest;
+use App\Models\View;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -104,7 +105,9 @@ class AdminController extends Controller
         $newChapter = Chapter::create($validatedData);
 
         $newChapter->view()->create([
-            'view_count' => 0
+            'weekly_view_count' => 0,
+            'monthly_view_count' => 0,
+            'all_time_view_count' => 0,
         ]);
 
         return redirect(route('admin.comics.index'))->with('success', 'New Chapter has been added!');
@@ -149,5 +152,21 @@ class AdminController extends Controller
         Comic::destroy($comic->id);
 
         return redirect(route('admin.comics.index'))->with('success', 'Comic has been deleted!');
+    }
+
+    // reset weekly view for all comics
+    public function resetWeeklyComicsView()
+    {
+        View::query()->update(['weekly_view_count' => 0]);
+
+        return back()->with('success', 'Weekly View For All Comics Has Been Reseted To 0.');
+    }
+
+    // reset monthly view for all comics
+    public function resetMonthlyComicsView()
+    {
+        View::query()->update(['monthly_view_count' => 0]);
+
+        return back()->with('success', 'Monthly View For All Comics Has Been Reseted To 0.');
     }
 }

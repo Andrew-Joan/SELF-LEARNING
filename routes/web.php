@@ -64,6 +64,11 @@ Route::prefix('admin')->controller(AdminController::class)->name('admin.')->midd
         Route::put('{comic}/update', 'update')->name('update');
 
         Route::delete('/delete/{comic}', 'delete')->name('delete');
+
+        Route::prefix('/reset')->name('reset.')->group(function() {
+            Route::post('/weekly', 'resetWeeklyComicsView')->name('weekly');
+            Route::post('/monthly', 'resetMonthlyComicsView')->name('monthly');
+        });
     });
 });
 

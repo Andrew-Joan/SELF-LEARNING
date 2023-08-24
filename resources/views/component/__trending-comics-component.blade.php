@@ -3,7 +3,7 @@
         # Trending
     </div>
     <div class="trending-duration-container">
-        <div class="trending-duration">
+        {{-- <div class="trending-duration">
             <div class="trending-weekly">
             Weekly
             </div>
@@ -13,53 +13,30 @@
             <div class="trending-alltime">
             All Time
             </div>
-        </div>
-    </div>
-
-    <div class="all-10-trending-comic-container">
-        @foreach($trending_comics as $trending_comic)
-            <div class="trending-comic-container">
-                <div class="trending-comic-number">
-                    {{ $loop->iteration }}
-                </div>
-
-                <div class="trending-comic-cover-container">
-                    @if ($trending_comic->image)
-                        <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}"><img src="{{ asset('storage/' . $trending_comic->image) }}" class="trending-comic-cover" alt="{{ $trending_comic->title }}"></a>
-                    @else
-                        <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}"><img src="{{ asset('assets/ComicImage/coming-soon.jfif') }}" class="trending-comic-cover" alt="Gambar Sementara"></a> 
-                    @endif
-                </div>
-
-                <div class="trending-comic-stats">
-                <a href="{{ route('comics.comic.single', ['comic' => $trending_comic->id]) }}">
-                    <div class="trending-comic-name">
-                        {{  Str::limit($trending_comic->title, 20) }}
-                    </div>
-                </a>
-                <div class="star-rating-container">
-                    <div class="star-wrapper">
-                    <img class= "star-1" src="https://assets.codepen.io/13090/filled_1.svg">
-                    <img class= "star-2" src="https://assets.codepen.io/13090/filled_1.svg">
-                    <img class= "star-3" src="https://assets.codepen.io/13090/filled_1.svg">
-                    <img class= "star-4" src="https://assets.codepen.io/13090/filled_1.svg">
-                    <img class= "star-5" src="https://assets.codepen.io/13090/filled_1.svg">
-                    </div>
-                    <div class="rating-number">
-                    4.9
-                    </div>
-                </div>
-                <div class="trending-genres">
-                    Genres:
-                    <span class="trending-comic-genres">
-                        @foreach($trending_comic->genre as $genre)
-                            {{ $genre->name }}
-                        @endforeach
-                    </span>
-                </div>
-                </div>
-            </div>
-        @endforeach
+        </div> --}}
+            <ul class="nav nav-pills mb-3 rounded justify-content-center" style="background-color: rgb(69, 43, 78);" id="pills-tab" role="tablist">
+              <li class="nav-item me-2" role="presentation">
+                <button class="nav-link active" id="pills-weekly-tab" data-bs-toggle="pill" data-bs-target="#pills-weekly" type="button" role="tab" aria-controls="pills-weekly" aria-selected="true">Weekly</button>
+              </li>
+              <li class="nav-item me-2" role="presentation">
+                <button class="nav-link" id="pills-monthly-tab" data-bs-toggle="pill" data-bs-target="#pills-monthly" type="button" role="tab" aria-controls="pills-monthly" aria-selected="false">Monthly</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-allTime-tab" data-bs-toggle="pill" data-bs-target="#pills-allTime" type="button" role="tab" aria-controls="pills-allTime" aria-selected="false">All Time</button>
+              </li>
+            </ul>
+            
+            <div class="tab-content" id="pills-tabContent">
+              <div class="tab-pane fade show active" id="pills-weekly" role="tabpanel" aria-labelledby="pills-weekly-tab">
+                @include('component.__trending-comics-weekly-component')
+              </div>
+              <div class="tab-pane fade" id="pills-monthly" role="tabpanel" aria-labelledby="pills-monthly-tab">
+                @include('component.__trending-comics-monthly-component')
+              </div>
+              <div class="tab-pane fade" id="pills-allTime" role="tabpanel" aria-labelledby="pills-allTime-tab">
+                @include('component.__trending-comics-allTime-component')
+              </div>
+            </div> 
     </div>
 </div>
 

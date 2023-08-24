@@ -53,31 +53,52 @@ class HomeController extends Controller
             $latestChapterInfo[$latestUpdate->id] = $latestChapter;
         }
 
+        $weeklyComicViews = [];
+        $monthlyComicViews = [];
         $comicViews = [];
 
         foreach ($allComics as $comic) {
+            $weeklyView = 0;
+            $monthlyView = 0;
             $totalView = 0;
             foreach ($comic->chapter as $chapter) {
                 if ($chapter->view) {
-                    $totalView += $chapter->view->view_count;
+                    $weeklyView += $chapter->view->weekly_view_count;
+                    $monthlyView += $chapter->view->monthly_view_count;
+                    $totalView += $chapter->view->all_time_view_count;
                 }
             }
+            $weeklyComicViews[$comic->id] = $weeklyView;
+            $monthlyComicViews[$comic->id] = $monthlyView;
             $comicViews[$comic->id] = $totalView;
         }
 
+        arsort($weeklyComicViews); //sort descending
+        arsort($monthlyComicViews); //sort descending
         arsort($comicViews); //sort descending
+
+        $weeklyTopComicIds = array_slice(array_keys($weeklyComicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
+        $monthlyTopComicIds = array_slice(array_keys($monthlyComicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
         $topComicIds = array_slice(array_keys($comicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
 
-        $trendingComics = collect($topComicIds)->map(function ($comicId) use ($allComics) {
+        $trendingComicsWeekly = collect($weeklyTopComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+        $trendingComicsMonthly = collect($monthlyTopComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+        $trendingComicsAllTime = collect($topComicIds)->map(function ($comicId) use ($allComics) {
             return $allComics->firstWhere('id', $comicId);
         });
         
         $totalComics = $allComics->count();
-
+        
         return view('home', [
             "latest_updates" => $latestUpdates,
             "latest_chapter_info" => $latestChapterInfo,
-            "trending_comics" => $trendingComics,
+            'trending_comics_weekly' => $trendingComicsWeekly,
+            'trending_comics_monthly' => $trendingComicsMonthly,
+            "trending_comics_allTime" => $trendingComicsAllTime,
             "total_comics" => $totalComics,
             "active" => 'home',
         ]);

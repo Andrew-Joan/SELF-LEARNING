@@ -15,7 +15,7 @@
                     @if ($bookmarkedComic->image)
                         <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('storage/' . $bookmarkedComic->image) }}" alt="{{ $bookmarkedComic->title }}"></a>
                     @else
-                        <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara"></a> 
+                        <a href="{{ route('comics.comic.single', ['comic' => $bookmarkedComic->id]) }}"><img src="{{ asset('assets/ComicImage/coming-soon.jfif') }}" alt="Gambar Sementara"></a> 
                     @endif
                     <div class="position-absolute top-0 end-0 bg-danger rounded deleteBookmarkedComic">
                         <form method="post" action="{{ route('bookmark.ajax-remove') }}" class="delete-bookmarked-comic-form" data-bookmarked-comic-id="{{ $bookmarkedComic->id }}">

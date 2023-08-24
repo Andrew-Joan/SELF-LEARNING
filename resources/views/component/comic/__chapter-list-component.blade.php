@@ -33,7 +33,7 @@
         $allChapter->created_at->diffForHumans() :
         $allChapter->created_at->format('d M Y');        
       @endphp
-
+      
       <div class="chapter-number-container">
         <div class="chap-number">
           {{ $allChapter->number }}
@@ -42,7 +42,7 @@
         <div class="single-chapter-info">
           <div class="view-count-style">
             @php
-              $view = $allChapter->view ? $allChapter->view->view_count :  0;
+              $view = $allChapter->view ? $allChapter->view->all_time_view_count : 0;
               echo $view;
             @endphp
             <span data-feather="eye"></span>
