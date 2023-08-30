@@ -33,24 +33,26 @@
         $allChapter->created_at->diffForHumans() :
         $allChapter->created_at->format('d M Y');        
       @endphp
-
-      <div class="chapter-number-container">
-        <div class="chap-number">
-          {{ $allChapter->number }}
-        </div>
-
-        <div class="single-chapter-info">
-          <div class="view-count-style">
-            @php
-              $view = $allChapter->view ? $allChapter->view->view_count :  0;
-              echo $view;
-            @endphp
-            <span data-feather="eye"></span>
+      
+      <a href="{{ route('comics.comic.read', ['comic' => $comic->id, 'chapter' => $allChapter->id]) }}">
+        <div class="chapter-number-container">
+          <div class="chap-number">
+            {{ $allChapter->number }}
           </div>
-          <div class="chap-release-date">
-            {{ $chapterReleasedTime }}
+
+          <div class="single-chapter-info">
+            <div class="view-count-style">
+              @php
+                $view = $allChapter->view ? $allChapter->view->all_time_view_count : 0;
+                echo $view;
+              @endphp
+              <span data-feather="eye"></span>
+            </div>
+            <div class="chap-release-date">
+              {{ $chapterReleasedTime }}
+            </div>
           </div>
         </div>
-      </div>
+      </a>
     @endforeach
 </div>

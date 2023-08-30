@@ -9,7 +9,7 @@
                 @if ($latest_update->image)
                     <a href="{{ route('comics.comic.single', ['comic' => $latest_update->id]) }}"><img src="{{ asset('storage/' . $latest_update->image) }}" alt="{{ $latest_update->title }}">
                 @else
-                    <a href="{{ route('comics.comic.single', ['comic' => $latest_update->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Sementara"></a> 
+                    <a href="{{ route('comics.comic.single', ['comic' => $latest_update->id]) }}"><img src="{{ asset('assets/ComicImage/coming-soon.jfif') }}" alt="Gambar Sementara"></a> 
                 @endif
 
                 <a href="{{ route('comics.comic.single', ['comic' => $latest_update->id]) }}">

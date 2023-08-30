@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('views', function (Blueprint $table) {
             $table->id();
             $table->foreignId('chapter_id')->references('id')->on('chapters')->onDelete('cascade');
-            $table->unsignedBigInteger('view_count');
+            $table->unsignedBigInteger('weekly_view_count');
+            $table->unsignedBigInteger('monthly_view_count');
+            $table->unsignedBigInteger('all_time_view_count');
             $table->timestamps();
         });
     }

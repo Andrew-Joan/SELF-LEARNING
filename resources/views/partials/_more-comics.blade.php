@@ -1,6 +1,10 @@
 @foreach($latest_updates as $latest_update)
     <div class="col mb-4">
-        <a href="{{ route('comics.comic.single', ['comic' => $latest_update->id]) }}"><img src="{{ asset('assets/ComicImage/Nano machine.jpg') }}" alt="Gambar Slider 1"></a> 
+        @if ($latest_update->image)
+        <a href="{{ route('comics.comic.single', ['comic' => $latest_update->id]) }}"><img src="{{ asset('storage/' . $latest_update->image) }}" class="trending-comic-cover" alt="{{ $latest_update->title }}"></a>
+        @else
+            <a href="{{ route('comics.comic.single', ['comic' => $latest_update->id]) }}"><img src="{{ asset('assets/ComicImage/coming-soon.jfif') }}" class="trending-comic-cover" alt="Gambar Sementara"></a> 
+        @endif 
         <a href="{{ route('comics.comic.single', ['comic' => $latest_update->id]) }}">
             <div class="comic-name">{{ Str::limit($latest_update->title, 15) }}</div>
         </a> 

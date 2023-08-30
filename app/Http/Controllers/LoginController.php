@@ -19,14 +19,24 @@ class LoginController extends Controller
     // langsung divalidasiin sama laravel, kita ga perlu cek manual
     public function authenticate(Request $request)
     {
+        $data = $request->all();
         $credentials = $request->validate([
             'email' => 'required|email', // email:dns klau mau lbh ketat lagi verifikasinya
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         if(Auth::attempt($credentials)) // jika benar, maka akan masuk ke sini
         {
             $request->session()->regenerate(); // untuk ngelindungin lagi dari session fixation(hacker2)
+
+            if (isset($data["remember"]) && !empty($data["remember"])) 
+            {
+                setcookie("email", $data["email"], time() + 3600 * 24 * 10); // set expired cookie dalam 10 hari
+                setcookie("password", $data["password"], time() + 3600 * 24 * 10); // set expired cookie dalam 10 hari
+            } else {
+                setcookie("email", "");
+                setcookie("password", "");
+            }
 
             $roleCheck = User::where('email', $credentials['email'])->value('role_id');
             return redirect()->intended($roleCheck == 1 ? '/' : '/admin');

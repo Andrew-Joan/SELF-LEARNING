@@ -31,28 +31,50 @@ class ComicController extends Controller
         $categories = Category::all();
 
         $allComics = Comic::has('chapter')->with('chapter.view', 'genre')->get();
+
+        $weeklyComicViews = [];
+        $monthlyComicViews = [];
         $comicViews = [];
 
         foreach ($allComics as $comic) {
+            $weeklyView = 0;
+            $monthlyView = 0;
             $totalView = 0;
             foreach ($comic->chapter as $chapter) {
                 if ($chapter->view) {
-                    $totalView += $chapter->view->view_count;
+                    $weeklyView += $chapter->view->weekly_view_count;
+                    $monthlyView += $chapter->view->monthly_view_count;
+                    $totalView += $chapter->view->all_time_view_count;
                 }
             }
+            $weeklyComicViews[$comic->id] = $weeklyView;
+            $monthlyComicViews[$comic->id] = $monthlyView;
             $comicViews[$comic->id] = $totalView;
         }
 
+        arsort($weeklyComicViews); //sort descending
+        arsort($monthlyComicViews); //sort descending
         arsort($comicViews); //sort descending
+
+        $weeklyTopComicIds = array_slice(array_keys($weeklyComicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
+        $monthlyTopComicIds = array_slice(array_keys($monthlyComicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
         $topComicIds = array_slice(array_keys($comicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
 
-        $trendingComics = collect($topComicIds)->map(function ($comicId) use ($allComics) {
+        $trendingComicsWeekly = collect($weeklyTopComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+        $trendingComicsMonthly = collect($monthlyTopComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+        $trendingComicsAllTime = collect($topComicIds)->map(function ($comicId) use ($allComics) {
             return $allComics->firstWhere('id', $comicId);
         });
 
         return view('comics', [
             "comics" => $paginatedComics,
-            "trending_comics" => $trendingComics,
+            'trending_comics_weekly' => $trendingComicsWeekly,
+            'trending_comics_monthly' => $trendingComicsMonthly,
+            "trending_comics_allTime" => $trendingComicsAllTime,
             "genres" => $genres,
             "statuses" => $statuses,
             "categories" => $categories,
@@ -67,23 +89,41 @@ class ComicController extends Controller
         $statuses = Status::all();
         $categories = Category::all();
 
+        $weeklyComicViews = [];
+        $monthlyComicViews = [];
         $comicViews = [];
 
         foreach ($allComics as $comic) {
+            $weeklyView = 0;
+            $monthlyView = 0;
             $totalView = 0;
             foreach ($comic->chapter as $chapter) {
                 if ($chapter->view) {
-                    $totalView += $chapter->view->view_count;
+                    $weeklyView += $chapter->view->weekly_view_count;
+                    $monthlyView += $chapter->view->monthly_view_count;
+                    $totalView += $chapter->view->all_time_view_count;
                 }
             }
+            $weeklyComicViews[$comic->id] = $weeklyView;
+            $monthlyComicViews[$comic->id] = $monthlyView;
             $comicViews[$comic->id] = $totalView;
         }
 
+        arsort($weeklyComicViews); //sort descending
+        arsort($monthlyComicViews); //sort descending
         arsort($comicViews); //sort descending
 
+        $weeklyTopComicIds = array_slice(array_keys($weeklyComicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
+        $monthlyTopComicIds = array_slice(array_keys($monthlyComicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
         $topComicIds = array_slice(array_keys($comicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
 
-        $trendingComics = collect($topComicIds)->map(function ($comicId) use ($allComics) {
+        $trendingComicsWeekly = collect($weeklyTopComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+        $trendingComicsMonthly = collect($monthlyTopComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+        $trendingComicsAllTime = collect($topComicIds)->map(function ($comicId) use ($allComics) {
             return $allComics->firstWhere('id', $comicId);
         });
 
@@ -131,7 +171,9 @@ class ComicController extends Controller
 
         return view('comics', [
             "comics" => $filteredComic,
-            "trending_comics" => $trendingComics,
+            'trending_comics_weekly' => $trendingComicsWeekly,
+            'trending_comics_monthly' => $trendingComicsMonthly,
+            "trending_comics_allTime" => $trendingComicsAllTime,
             "genres" => $genres,
             "statuses" => $statuses,
             "categories" => $categories,
@@ -186,24 +228,41 @@ class ComicController extends Controller
 
         $comic = $comic->with('chapter.view')->find($comic->id);
 
+        $weeklyComicViews = [];
+        $monthlyComicViews = [];
         $comicViews = [];
 
-        foreach ($allComics as $singleComic) {
+        foreach ($allComics as $comicSpecific) {
+            $weeklyView = 0;
+            $monthlyView = 0;
             $totalView = 0;
-            foreach ($singleComic->chapter as $chapter) {
+            foreach ($comicSpecific->chapter as $chapter) {
                 if ($chapter->view) {
-                    $totalView += $chapter->view->view_count;
+                    $weeklyView += $chapter->view->weekly_view_count;
+                    $monthlyView += $chapter->view->monthly_view_count;
+                    $totalView += $chapter->view->all_time_view_count;
                 }
             }
-            $comicViews[$singleComic->id] = $totalView;
+            $weeklyComicViews[$comicSpecific->id] = $weeklyView;
+            $monthlyComicViews[$comicSpecific->id] = $monthlyView;
+            $comicViews[$comicSpecific->id] = $totalView;
         }
 
+        arsort($weeklyComicViews); //sort descending
+        arsort($monthlyComicViews); //sort descending
         arsort($comicViews); //sort descending
 
-        // ini untuk trending comic section
+        $weeklyTopComicIds = array_slice(array_keys($weeklyComicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
+        $monthlyTopComicIds = array_slice(array_keys($monthlyComicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
         $topComicIds = array_slice(array_keys($comicViews), 0, 10); // array keys itu ngambil key arraynya (A[n] -> ambil n)
 
-        $trendingComics = collect($topComicIds)->map(function ($comicId) use ($allComics) {
+        $trendingComicsWeekly = collect($weeklyTopComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+        $trendingComicsMonthly = collect($monthlyTopComicIds)->map(function ($comicId) use ($allComics) {
+            return $allComics->firstWhere('id', $comicId);
+        });
+        $trendingComicsAllTime = collect($topComicIds)->map(function ($comicId) use ($allComics) {
             return $allComics->firstWhere('id', $comicId);
         });
 
@@ -254,7 +313,9 @@ class ComicController extends Controller
             "all_chapters" => $allChapters,
             "total_view" => $totalView,
             "comic_rank" => $comicRank,
-            "trending_comics" => $trendingComics,
+            'trending_comics_weekly' => $trendingComicsWeekly,
+            'trending_comics_monthly' => $trendingComicsMonthly,
+            "trending_comics_allTime" => $trendingComicsAllTime,
             "comments" => $comments,
             "total_comments" => $totalComments,
             "bookmarked_or_not" => $bookmarkedOrNot,
@@ -264,7 +325,9 @@ class ComicController extends Controller
 
     public function read(Comic $comic, Chapter $chapter)
     {
-        $chapter->view->increment('view_count'); //nambahin value kolom view_count di chapter yang di click
+        $chapter->view->increment('weekly_view_count');
+        $chapter->view->increment('monthly_view_count');
+        $chapter->view->increment('all_time_view_count');
         
         return back();
     }
